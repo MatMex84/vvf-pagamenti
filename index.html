@@ -190,6 +190,14 @@ nav button.on .tab-lbl{color:var(--vvf);font-weight:700}
 .mt{margin-top:20px}
 .mt-sm{margin-top:10px}
 
+/* ═══ LOGIN ═══ */
+#login-screen{min-height:100vh;display:flex;align-items:center;padding:16px}
+.login-box{max-width:380px;margin:0 auto;width:100%}
+.login-logo{width:60px;height:60px;border-radius:18px;background:var(--vvf);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px}
+.login-title{text-align:center;font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:28px}
+.login-err{color:var(--vvf);font-size:13px;padding:10px 4px 0;display:none;text-align:center}
+.login-err.show{display:block}
+
 /* ═══ PRIVACY (occhio) ═══ */
 .eye-mini{background:none;border:none;font-size:13px;cursor:pointer;padding:2px;line-height:1;flex:none}
 .ios-td.muted-row{opacity:.42}
@@ -220,18 +228,32 @@ nav button.on .tab-lbl{color:var(--vvf);font-weight:700}
 }
 </style>
 
-<div class="nav">
+<div id="login-screen" style="display:none">
+  <div class="login-box">
+    <div class="login-logo">🔥</div>
+    <div class="login-title">Servizi Extra VVF</div>
+    <div class="ios-g gap-sm">
+      <div class="ios-r"><label>Email</label><input id="login-email" type="email" autocomplete="username" placeholder="tua@email.it" style="text-align:right"></div>
+      <div class="ios-r"><label>Password</label><input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••••" style="text-align:right"></div>
+    </div>
+    <div class="login-err" id="login-err"></div>
+    <button class="btn-prim mt-sm" id="login-btn">Accedi</button>
+  </div>
+</div>
+
+<div class="nav" style="display:none">
   <div class="nav-inner">
     <div class="nav-flame">🔥</div>
     <div class="nav-title" id="nav-title">Insoluto</div>
+    <button class="theme-btn" id="logout-btn" title="Esci">🚪</button>
     <button class="theme-btn" id="theme-toggle" title="Tema">🌙</button>
     <div class="nav-saved" id="saved">✓ salvato</div>
   </div>
 </div>
 
-<main id="app"></main>
+<main id="app" style="display:none"></main>
 
-<nav id="tab-bar">
+<nav id="tab-bar" style="display:none">
   <div class="tabbar-inner">
     <button data-tab="insoluto" class="on"><span class="tab-ic">📊</span><span class="tab-lbl">Insoluto</span></button>
     <button data-tab="inserisci"><span class="tab-ic">＋</span><span class="tab-lbl">Inserisci</span></button>
@@ -241,6 +263,9 @@ nav button.on .tab-lbl{color:var(--vvf);font-weight:700}
 </nav>
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <script>
 /* ═══ STATE ═══ */
@@ -257,7 +282,6 @@ function toggleHiddenMonth(k){
   if(i>=0) hiddenMonths.splice(i,1); else hiddenMonths.push(k);
   try{ localStorage.setItem('vvf_hidden_months', JSON.stringify(hiddenMonths)); }catch(e){}
 }
-const hasStore = typeof window!=='undefined' && window.storage && typeof window.storage.get==='function';
 const TIPI = [
   ['Straordinario','ore'],['Vigilanza','ore'],['Boschiva (AIB)','ore'],
   ['Corso / Addestramento','ore'],['Ore guida','ore'],
@@ -298,19 +322,83 @@ document.getElementById('theme-toggle').onclick = ()=>{
 };
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ()=>applyTheme(null));
 
-/* ═══ PERSISTENCE ═══ */
-async function load(){
-  if(!hasStore){ state=JSON.parse(JSON.stringify(INITIAL_DATA)); return; }
+/* ═══ FIREBASE (login + sync tra dispositivi) ═══ */
+const firebaseConfig = {
+  apiKey: "AIzaSyCSwlDuTGtQwNbu-Z0UZUjrd46Vvk54RH0",
+  authDomain: "vvf-pagamenti.firebaseapp.com",
+  projectId: "vvf-pagamenti",
+  storageBucket: "vvf-pagamenti.firebasestorage.app",
+  messagingSenderId: "977401397963",
+  appId: "1:977401397963:web:fabcd4ed98029ed111514e"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+try{ db.enablePersistence({synchronizeTabs:true}); }catch(e){}
+let currentUser = null;
+
+function showLogin(){
+  document.getElementById('login-screen').style.display='flex';
+  document.querySelector('.nav').style.display='none';
+  document.getElementById('app').style.display='none';
+  document.getElementById('tab-bar').style.display='none';
+}
+function showApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.querySelector('.nav').style.display='';
+  document.getElementById('app').style.display='';
+  document.getElementById('tab-bar').style.display='';
+}
+function userDocRef(){ return db.collection('users').doc(currentUser.uid).collection('data').doc('state'); }
+
+document.getElementById('login-btn').onclick = doLogin;
+document.getElementById('login-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+async function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  const errEl=document.getElementById('login-err');
+  errEl.classList.remove('show');
+  if(!email||!pass){ errEl.textContent='Inserisci email e password'; errEl.classList.add('show'); return; }
+  const btn=document.getElementById('login-btn'); btn.disabled=true; btn.textContent='Accesso in corso…';
   try{
-    const r=await window.storage.get(KEY);
-    if(r&&r.value){ state=JSON.parse(r.value); }
-    else{ state=JSON.parse(JSON.stringify(INITIAL_DATA)); await window.storage.set(KEY,JSON.stringify(state)); }
-  }catch(e){ state=JSON.parse(JSON.stringify(INITIAL_DATA)); }
+    await auth.signInWithEmailAndPassword(email,pass);
+  }catch(e){
+    errEl.textContent='Accesso non riuscito: email o password errati';
+    errEl.classList.add('show');
+  }
+  btn.disabled=false; btn.textContent='Accedi';
+}
+document.getElementById('logout-btn').onclick = ()=>{ auth.signOut(); };
+
+auth.onAuthStateChanged(async user=>{
+  if(user){
+    currentUser=user;
+    await load();
+    showApp();
+    render();
+  } else {
+    currentUser=null;
+    showLogin();
+  }
+});
+
+/* ═══ PERSISTENCE (Firestore, sincronizzato tra dispositivi) ═══ */
+async function load(){
+  try{
+    const snap=await userDocRef().get();
+    if(snap.exists && snap.data().payload){ state=JSON.parse(snap.data().payload); return; }
+  }catch(e){ console.error(e); }
+  state=JSON.parse(JSON.stringify(INITIAL_DATA));
+  await save();
 }
 let _st;
 async function save(){
-  if(hasStore){ try{ await window.storage.set(KEY,JSON.stringify(state)); flashSaved(); }catch(e){ toast('Salvataggio non riuscito'); }}
-  else flashSaved();
+  try{
+    if(currentUser){
+      await userDocRef().set({payload:JSON.stringify(state), updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    }
+    flashSaved();
+  }catch(e){ console.error(e); toast('Salvataggio non riuscito'); }
 }
 function flashSaved(){ const s=document.getElementById('saved'); s.classList.add('show'); clearTimeout(_st); _st=setTimeout(()=>s.classList.remove('show'),1400); }
 
@@ -874,5 +962,5 @@ function importJSON(e){
 
 /* ═══ NAV + BOOT ═══ */
 document.querySelectorAll('#tab-bar button').forEach(b=>b.onclick=()=>{ tab=b.dataset.tab; if(tab!=='servizi') filter='attesa'; render(); });
-(async()=>{ await load(); render(); if(!hasStore) toast('Anteprima: dati non persistiti'); })();
+
 </script>
