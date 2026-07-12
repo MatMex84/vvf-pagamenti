@@ -162,7 +162,8 @@ main{max-width:430px;margin:0 auto;padding:0 16px 12px}
 .cedo-row .d{color:var(--lbl2);font-size:12px}
 
 /* ═══ TAB BAR ═══ */
-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(249,249,249,.94);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:.33px solid var(--sep-o);padding-bottom:var(--sfb);display:flex;transition:background .3s}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(249,249,249,.94);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:.33px solid var(--sep-o);padding-bottom:var(--sfb);transition:background .3s}
+.tabbar-inner{display:flex;width:100%}
 [data-dark] nav{background:rgba(28,28,30,.94)}
 nav button{flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px 4px;font:inherit}
 .tab-ic{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:21px;line-height:1}
@@ -187,6 +188,33 @@ nav button.on .tab-lbl{color:var(--vvf);font-weight:700}
 .gap-sm{margin-bottom:10px}
 .mt{margin-top:20px}
 .mt-sm{margin-top:10px}
+
+/* ═══ PRIVACY (occhio) ═══ */
+.priv-btn{background:none;border:none;font-size:17px;cursor:pointer;padding:4px;line-height:1}
+.bldr-note{padding:0 16px 10px;font-size:12px;color:var(--lbl2);margin-top:-6px}
+
+/* ═══ GRID SERVIZI/CEDOLINI (desktop) ═══ */
+.svc-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.cedo-grid{display:grid;grid-template-columns:1fr;gap:12px}
+
+/* ═══ LAYOUT RESPONSIVE DESKTOP ═══ */
+@media (min-width:640px){
+  main{max-width:600px}
+}
+@media (min-width:860px){
+  main{max-width:820px}
+  .nav-inner{max-width:820px;margin:0 auto}
+  .tabbar-inner{max-width:820px;margin:0 auto}
+  .widgets{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  .svc-grid{grid-template-columns:repeat(2,1fr)}
+  .cedo-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (min-width:1180px){
+  main{max-width:1140px}
+  .nav-inner{max-width:1140px}
+  .tabbar-inner{max-width:1140px}
+  .svc-grid{grid-template-columns:repeat(3,1fr)}
+}
 </style>
 
 <div class="nav">
@@ -201,13 +229,16 @@ nav button.on .tab-lbl{color:var(--vvf);font-weight:700}
 <main id="app"></main>
 
 <nav id="tab-bar">
-  <button data-tab="insoluto" class="on"><span class="tab-ic">📊</span><span class="tab-lbl">Insoluto</span></button>
-  <button data-tab="inserisci"><span class="tab-ic">＋</span><span class="tab-lbl">Inserisci</span></button>
-  <button data-tab="servizi"><span class="tab-ic">📋</span><span class="tab-lbl">Servizi</span></button>
-  <button data-tab="cedolini"><span class="tab-ic">🧾</span><span class="tab-lbl">Cedolini</span></button>
+  <div class="tabbar-inner">
+    <button data-tab="insoluto" class="on"><span class="tab-ic">📊</span><span class="tab-lbl">Insoluto</span></button>
+    <button data-tab="inserisci"><span class="tab-ic">＋</span><span class="tab-lbl">Inserisci</span></button>
+    <button data-tab="servizi"><span class="tab-ic">📋</span><span class="tab-lbl">Servizi</span></button>
+    <button data-tab="cedolini"><span class="tab-ic">🧾</span><span class="tab-lbl">Cedolini</span></button>
+  </div>
 </nav>
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <script>
 /* ═══ STATE ═══ */
 const KEY = 'vvf_tracker_v1';
@@ -215,6 +246,10 @@ let state   = { services: [], cedolini: [] };
 let tab     = 'insoluto';
 let filter  = 'attesa';
 let draftLines = [];
+let draftMonth = null;
+let hideAmounts = false;
+try{ hideAmounts = localStorage.getItem('vvf_hide')==='1'; }catch(e){}
+if(window.pdfjsLib){ try{ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'; }catch(e){} }
 const hasStore = typeof window!=='undefined' && window.storage && typeof window.storage.get==='function';
 const TIPI = [
   ['Straordinario','ore'],['TDF','ore'],['Integrazione nucleo','ore'],
@@ -281,6 +316,7 @@ function monthsAgo(ym){ if(!ym)return 0; const[y,m]=ym.split('-').map(Number); c
 function esc(s){ return(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2000); }
 function fmt(n){ return(Math.round(n*100)/100).toLocaleString('it-IT',{maximumFractionDigits:2}); }
+function mask(v){ return hideAmounts ? '•••' : v; }
 function calcHours(from,to){
   if(!from||!to) return null;
   const[fh,fm]=from.split(':').map(Number);
@@ -373,19 +409,23 @@ function viewServizi(){
   const shown=list.filter(s=>f==='tutti'?true:f==='attesa'?s.status==='attesa':s.status==='pagato');
   if(!list.length)  return seg+emptyState('Nessun servizio','Aggiungi il primo dalla tab Inserisci.','inserisci');
   if(!shown.length) return seg+emptyState('Niente qui','Nessun servizio in questo filtro.');
-  let html=seg, lastG='';
+  let html=seg, lastG=null, open=false;
   shown.forEach(s=>{
     const g=monthOf(s.date);
     if(g!==lastG){
+      if(open) html+='</div>';
       const cnt=shown.filter(x=>monthOf(x.date)===g).length;
       html+=`<div class="month-hd">
         <span class="month-hd-lbl">${monthLabel(g,true)}</span>
         <button class="del-month-btn" data-month="${g}">🗑 Elimina mese (${cnt})</button>
       </div>`;
+      html+='<div class="svc-grid">';
+      open=true;
       lastG=g;
     }
     html+=svcCard(s);
   });
+  if(open) html+='</div>';
   return html;
 }
 
@@ -448,31 +488,35 @@ function viewCedolini(){
         <div class="bldr-field"><label>Competenza</label><input class="dl-ref" type="month" value="${l.ref||''}"></div>
         <div class="bldr-field"><label>Importo €</label><input class="dl-amt" type="number" inputmode="decimal" step="0.01" placeholder="—" value="${l.amount??''}"></div>
       </div>
+      ${l.desc?`<div class="bldr-note">📄 ${esc(l.desc)}</div>`:''}
       <div class="bldr-del"><button class="btn-sm red dl-x" data-i="${i}">Rimuovi voce</button></div>
     </div>`).join('');
 
   let html=`
 <div style="padding:0 0 8px">
   <div class="large-title">Cedolini</div>
+  <div class="sf" style="padding-top:0">Carica il PDF del cedolino: ore, competenza e importi vengono estratti e riconosciuti in automatico, poi il riscontro con i servizi in attesa parte da solo al salvataggio.</div>
+  <button class="btn-prim gap-sm" id="c_pdf_btn" style="margin-top:10px">📄 Carica PDF cedolino</button>
+  <input type="file" id="c_pdf_file" accept="application/pdf" style="display:none">
   <div class="sh" style="margin-top:16px">Mese del cedolino</div>
   <div class="ios-g gap-sm">
-    <div class="ios-r"><label>Mese</label><input type="month" id="c_month" value="${monthOf(todayISO())}"></div>
+    <div class="ios-r"><label>Mese</label><input type="month" id="c_month" value="${draftMonth||monthOf(todayISO())}"></div>
   </div>
   <div class="sh mt-sm">Voci pagate</div>
   <div class="bldr-wrap gap-sm" id="c_lines_wrap">
     ${lineHtml||'<div style="padding:14px 16px;font-size:15px;color:var(--lbl2)">Nessuna voce aggiunta</div>'}
   </div>
   <button class="btn-ghost gap-sm" id="c_addline" style="width:100%;margin-bottom:10px">＋ Aggiungi voce pagata</button>
-  <button class="btn-prim" id="c_save" style="margin-bottom:28px">Salva cedolino</button>`;
+  <button class="btn-prim" id="c_save" style="margin-bottom:28px">Salva e riscontra cedolino</button>`;
 
   if(list.length){
-    html+=`<div class="sh">Cedolini registrati</div>`;
+    html+=`<div class="sh">Cedolini registrati</div><div class="cedo-grid">`;
     list.forEach(c=>{
       const rows=(c.lines||[]).map(l=>`<div class="cedo-row">
-        <span class="k">${esc(l.kind)}</span>
-        ${l.hours!=null?`<span class="d">${l.hours} h</span>`:''}
+        <span class="k">${esc(l.kind)}${l.desc?` <span style="font-weight:400;color:var(--lbl2)">· ${esc(l.desc)}</span>`:''}</span>
+        ${l.hours!=null?`<span class="d">${mask(l.hours+' h')}</span>`:''}
         ${l.ref?`<span class="tag comp" style="font-size:11px">comp. ${monthLabel(l.ref,true)}</span>`:''}
-        ${l.amount!=null?`<span class="d tnum" style="margin-left:auto">€ ${(+l.amount).toFixed(2)}</span>`:''}
+        ${l.amount!=null?`<span class="d tnum" style="margin-left:auto">€ ${mask((+l.amount).toFixed(2))}</span>`:''}
       </div>`).join('');
       html+=`<div class="cedo">
         <div class="cedo-hd">
@@ -483,8 +527,76 @@ function viewCedolini(){
         ${rows||'<div style="padding:12px 16px;font-size:14px;color:var(--lbl2)">Nessuna voce</div>'}
       </div>`;
     });
+    html+=`</div>`;
   }
   return html+'</div>';
+}
+
+/* ══════════════════════════════════════════
+   IMPORT PDF CEDOLINO
+══════════════════════════════════════════ */
+async function pdfToText(data){
+  const doc=await pdfjsLib.getDocument({data}).promise;
+  let out='';
+  for(let p=1;p<=doc.numPages;p++){
+    const page=await doc.getPage(p);
+    const content=await page.getTextContent();
+    const lines={};
+    content.items.forEach(it=>{
+      const y=Math.round(it.transform[5]);
+      (lines[y]=lines[y]||[]).push(it);
+    });
+    const ys=Object.keys(lines).map(Number).sort((a,b)=>b-a);
+    ys.forEach(y=>{
+      const row=lines[y].slice().sort((a,b)=>a.transform[4]-b.transform[4]);
+      let lineStr='', prevEndX=null;
+      row.forEach(it=>{
+        const x=it.transform[4], h=it.height||it.transform[0]||8;
+        if(prevEndX!==null && (x-prevEndX)>Math.max(2,h*0.3)) lineStr+=' ';
+        lineStr+=it.str; prevEndX=x+(it.width||0);
+      });
+      out+=lineStr+'\n';
+    });
+  }
+  return out;
+}
+function parseCedolinoText(text){
+  const toNum=s=>parseFloat(s.replace(/\./g,'').replace(',','.'));
+  const rataM=text.match(/RATA\s*:?\s*([A-Za-zÀ-ù]+)\s+(\d{4})/i);
+  let month=null;
+  if(rataM){ const mi=MESI.findIndex(m=>m.toLowerCase()===rataM[1].toLowerCase()); if(mi>=0) month=rataM[2]+'-'+String(mi+1).padStart(2,'0'); }
+  const reStr=/^([A-Z0-9]+\/[A-Z0-9]+)\s+STRAORDINARIO\s*([A-ZÀ-Ù. ]*?)\s*-\s*Qta\.\s*([\d.,]+)\s*-\s*Imp\.\s*([\d.,]+)\s*-\s*Rif\.\s*(\d{2})\/(\d{4})\s+([\d.,]+)\s*$/i;
+  const reInd=/^([A-Z0-9]+\/[A-Z0-9]+)\s+(.+?)\s*-\s*dal\s*(\d{2})\/(\d{4})\s*al\s*(\d{2})\/(\d{4})\s+([\d.,]+)\s*$/i;
+  const lines=[];
+  text.split('\n').forEach(raw=>{
+    const line=raw.trim(); if(!line) return;
+    let m=line.match(reStr);
+    if(m){
+      const label=(m[2]||'').toUpperCase();
+      const kind=/NOTT|FEST/.test(label)?'Straordinario nott./festivo':'Straordinario diurno';
+      lines.push({kind,desc:null,hours:toNum(m[3]),ref:m[6]+'-'+m[5],amount:toNum(m[7])});
+      return;
+    }
+    m=line.match(reInd);
+    if(m) lines.push({kind:'Indennità',desc:m[2].trim(),hours:null,ref:m[4]+'-'+m[3],amount:toNum(m[7])});
+  });
+  return {month,lines};
+}
+async function handlePdfUpload(e){
+  const file=e.target.files[0]; if(!file) return;
+  if(!window.pdfjsLib){ toast('Libreria PDF non caricata, riprova'); e.target.value=''; return; }
+  toast('Lettura del PDF…');
+  try{
+    const buf=await file.arrayBuffer();
+    const text=await pdfToText(new Uint8Array(buf));
+    const {month,lines}=parseCedolinoText(text);
+    if(!lines.length){ toast('Nessuna voce riconosciuta nel PDF'); e.target.value=''; return; }
+    draftMonth=month;
+    draftLines=lines.map(l=>({kind:l.kind,desc:l.desc,hours:l.hours??'',ref:l.ref||'',amount:l.amount??''}));
+    toast(`${lines.length} voci estratte dal PDF`);
+    render();
+  }catch(err){ console.error(err); toast('Errore nella lettura del PDF'); }
+  e.target.value='';
 }
 
 function reconcileCedolino(id){
@@ -522,8 +634,8 @@ function viewInsoluto(){
     const v=byComp[k], age=monthsAgo(k), old=age>=9;
     return `<div class="ios-td">
       <div class="main">${monthLabel(k,true)}${old?`<span class="tag warn" style="font-size:10px;padding:1px 6px">${age}m</span>`:''}</div>
-      <div class="r${old?' red':''}">${v.ore?fmt(v.ore)+' h':'—'}</div>
-      <div class="r" style="min-width:34px">${v.cnt||'—'}</div>
+      <div class="r${old?' red':''}">${v.ore?mask(fmt(v.ore)+' h'):'—'}</div>
+      <div class="r" style="min-width:34px">${v.cnt?mask(v.cnt):'—'}</div>
       <div class="r" style="min-width:28px;color:var(--lbl3)">${v.n}</div>
     </div>`;
   }).join('');
@@ -540,15 +652,18 @@ function viewInsoluto(){
   </div>
   <div class="sh">${pend.length} voci in attesa · ${state.services.length} totali</div>
   <div class="widgets gap">
-    <div class="widget"><div class="wico">⏱</div><div class="wnum red">${fmt(oreTot)}</div><div class="wlbl">ore da pagare</div></div>
-    <div class="widget"><div class="wico">🍽</div><div class="wnum red">${cntTot}</div><div class="wlbl">pasti / pernotti</div></div>
+    <div class="widget"><div class="wico">⏱</div><div class="wnum red">${mask(fmt(oreTot))}</div><div class="wlbl">ore da pagare</div></div>
+    <div class="widget"><div class="wico">🍽</div><div class="wnum red">${mask(cntTot)}</div><div class="wlbl">pasti / pernotti</div></div>
   </div>
-  <div class="sh">Per mese di competenza — dal più recente</div>
+  <div class="sh" style="display:flex;align-items:center;gap:6px">
+    <span style="flex:1">Per mese di competenza — dal più recente</span>
+    <button class="priv-btn" id="priv-toggle" title="Nascondi ore/pasti">${hideAmounts?'🙈':'👁️'}</button>
+  </div>
   <div class="ios-tbl gap">
     <div class="ios-th"><div style="flex:1">Competenza</div><div style="min-width:52px;text-align:right">Ore</div><div style="min-width:34px;text-align:right">Cnt</div><div style="min-width:28px;text-align:right;color:var(--lbl3)">N</div></div>
     ${tableRows||'<div class="ios-td"><div class="main" style="color:var(--green)">Tutto pagato 🎉</div></div>'}
   </div>
-  ${oldest.length?`<div class="sh">⏳ In ritardo da oltre 9 mesi</div>`+oldest.map(svcCard).join(''):''}
+  ${oldest.length?`<div class="sh">⏳ In ritardo da oltre 9 mesi</div><div class="svc-grid">`+oldest.map(svcCard).join('')+`</div>`:''}
   <input type="file" id="imp_file" accept="application/json" style="display:none">
 </div>`;
 }
@@ -645,6 +760,8 @@ function editService(id){
 }
 
 function wireCedolini(){
+  const pdfBtn=document.getElementById('c_pdf_btn'), pdfFile=document.getElementById('c_pdf_file');
+  if(pdfBtn&&pdfFile){ pdfBtn.onclick=()=>pdfFile.click(); pdfFile.onchange=handlePdfUpload; }
   document.getElementById('c_addline').onclick=()=>{ readDraft(); draftLines.push({kind:'Straordinario diurno',hours:'',ref:'',amount:''}); render(); };
   document.querySelectorAll('.dl-x').forEach(b=>b.onclick=()=>{ readDraft(); draftLines.splice(+b.dataset.i,1); render(); });
   document.getElementById('c_save').onclick=()=>{
@@ -652,9 +769,13 @@ function wireCedolini(){
     const month=document.getElementById('c_month').value;
     if(!month){ toast('Indica il mese del cedolino'); return; }
     const lines=draftLines.filter(l=>l.hours!==''||l.ref!==''||l.amount!=='')
-      .map(l=>({kind:l.kind,hours:l.hours===''?null:+l.hours,ref:l.ref||null,amount:l.amount===''?null:+l.amount}));
+      .map(l=>({kind:l.kind,desc:l.desc||null,hours:l.hours===''?null:+l.hours,ref:l.ref||null,amount:l.amount===''?null:+l.amount}));
     if(!lines.length){ toast('Aggiungi almeno una voce'); return; }
-    state.cedolini.push({id:uid(),month,lines}); draftLines=[]; save(); toast('Cedolino salvato'); render();
+    const id=uid();
+    state.cedolini.push({id,month,lines});
+    draftLines=[]; draftMonth=null;
+    save();
+    reconcileCedolino(id);
   };
   document.querySelectorAll('.c-recon').forEach(b=>b.onclick=()=>reconcileCedolino(b.dataset.id));
   document.querySelectorAll('.c-del').forEach(b=>b.onclick=()=>{ if(confirm('Eliminare questo cedolino?')){ state.cedolini=state.cedolini.filter(c=>c.id!==b.dataset.id); save(); render(); }});
@@ -671,6 +792,12 @@ function readDraft(){
 }
 
 function wireInsoluto(){
+  const pb=document.getElementById('priv-toggle');
+  if(pb) pb.onclick=()=>{
+    hideAmounts=!hideAmounts;
+    try{ localStorage.setItem('vvf_hide', hideAmounts?'1':'0'); }catch(e){}
+    render();
+  };
   document.querySelectorAll('.t-pay').forEach( b=>b.onclick=()=>setStatus(b.dataset.id,'pagato'));
   document.querySelectorAll('.t-wait').forEach(b=>b.onclick=()=>setStatus(b.dataset.id,'attesa'));
   document.querySelectorAll('.t-del').forEach( b=>b.onclick=()=>{ state.services=state.services.filter(s=>s.id!==b.dataset.id); save(); render(); });
