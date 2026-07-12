@@ -5,6 +5,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Servizi Extra VVF</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23C8102E'/><text x='50' y='72' font-size='60' text-anchor='middle'>%F0%9F%94%A5</text></svg>">
 <style>
 /* ═══ TOKEN SISTEMA ═══ */
 :root {
@@ -44,7 +45,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 html,body{height:100%;background:var(--bg);font-family:-apple-system,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;color:var(--lbl);-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
-body{padding-bottom:calc(50px + var(--sfb) + 34px)}
+body{padding-bottom:calc(50px + var(--sfb) + 56px)}
 
 /* ═══ NAV BAR ═══ */
 .nav{position:sticky;top:var(--sft);z-index:100;background:rgba(242,242,247,.92);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.33px solid var(--sep);transition:background .3s}
@@ -238,7 +239,7 @@ nav button.on .tab-lbl{color:var(--vvf);font-weight:700}
 </nav>
 <div class="toast" id="toast"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <script>
 /* ═══ STATE ═══ */
 const KEY = 'vvf_tracker_v1';
@@ -249,7 +250,6 @@ let draftLines = [];
 let draftMonth = null;
 let hideAmounts = false;
 try{ hideAmounts = localStorage.getItem('vvf_hide')==='1'; }catch(e){}
-if(window.pdfjsLib){ try{ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'; }catch(e){} }
 const hasStore = typeof window!=='undefined' && window.storage && typeof window.storage.get==='function';
 const TIPI = [
   ['Straordinario','ore'],['TDF','ore'],['Integrazione nucleo','ore'],
@@ -584,7 +584,8 @@ function parseCedolinoText(text){
 }
 async function handlePdfUpload(e){
   const file=e.target.files[0]; if(!file) return;
-  if(!window.pdfjsLib){ toast('Libreria PDF non caricata, riprova'); e.target.value=''; return; }
+  if(!window.pdfjsLib){ toast('Libreria PDF non ancora pronta: attendi un istante e riprova'); e.target.value=''; return; }
+  try{ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsLib.GlobalWorkerOptions.workerSrc || 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'; }catch(_){}
   toast('Lettura del PDF…');
   try{
     const buf=await file.arrayBuffer();
