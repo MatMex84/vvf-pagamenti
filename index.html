@@ -45,7 +45,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 html,body{height:100%;background:var(--bg);font-family:-apple-system,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;color:var(--lbl);-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
-body{padding-bottom:calc(50px + var(--sfb) + 56px)}
+body{padding-bottom:calc(50px + var(--sfb) + 80px)}
 
 /* ═══ NAV BAR ═══ */
 .nav{position:sticky;top:var(--sft);z-index:100;background:rgba(242,242,247,.92);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.33px solid var(--sep);transition:background .3s}
@@ -191,7 +191,9 @@ nav button.on .tab-lbl{color:var(--vvf);font-weight:700}
 .mt-sm{margin-top:10px}
 
 /* ═══ PRIVACY (occhio) ═══ */
-.priv-btn{background:none;border:none;font-size:17px;cursor:pointer;padding:4px;line-height:1}
+.eye-mini{background:none;border:none;font-size:13px;cursor:pointer;padding:2px;line-height:1;flex:none}
+.ios-td.muted-row{opacity:.42}
+.ios-td.muted-row .main,.ios-td.muted-row .r{color:var(--lbl2)}
 .bldr-note{padding:0 16px 10px;font-size:12px;color:var(--lbl2);margin-top:-6px}
 
 /* ═══ GRID SERVIZI/CEDOLINI (desktop) ═══ */
@@ -248,8 +250,13 @@ let tab     = 'insoluto';
 let filter  = 'attesa';
 let draftLines = [];
 let draftMonth = null;
-let hideAmounts = false;
-try{ hideAmounts = localStorage.getItem('vvf_hide')==='1'; }catch(e){}
+let hiddenMonths = [];
+try{ const hm=JSON.parse(localStorage.getItem('vvf_hidden_months')||'[]'); if(Array.isArray(hm)) hiddenMonths=hm; }catch(e){ hiddenMonths=[]; }
+function toggleHiddenMonth(k){
+  const i=hiddenMonths.indexOf(k);
+  if(i>=0) hiddenMonths.splice(i,1); else hiddenMonths.push(k);
+  try{ localStorage.setItem('vvf_hidden_months', JSON.stringify(hiddenMonths)); }catch(e){}
+}
 const hasStore = typeof window!=='undefined' && window.storage && typeof window.storage.get==='function';
 const TIPI = [
   ['Straordinario','ore'],['TDF','ore'],['Integrazione nucleo','ore'],
@@ -276,7 +283,8 @@ function applyTheme(manual){
   if(manual==='dark') dark=true;
   else if(manual==='light') dark=false;
   else dark = sysDark || isNight;
-  document.documentElement.setAttribute('data-dark', dark?'1':'');
+  if(dark) document.documentElement.setAttribute('data-dark','1');
+  else document.documentElement.removeAttribute('data-dark');
   document.getElementById('theme-toggle').textContent = dark ? '☀️' : '🌙';
   try{ localStorage.setItem('vvf_theme', dark?'dark':'light'); }catch(e){}
 }
@@ -316,7 +324,6 @@ function monthsAgo(ym){ if(!ym)return 0; const[y,m]=ym.split('-').map(Number); c
 function esc(s){ return(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2000); }
 function fmt(n){ return(Math.round(n*100)/100).toLocaleString('it-IT',{maximumFractionDigits:2}); }
-function mask(v){ return hideAmounts ? '•••' : v; }
 function calcHours(from,to){
   if(!from||!to) return null;
   const[fh,fm]=from.split(':').map(Number);
@@ -514,9 +521,9 @@ function viewCedolini(){
     list.forEach(c=>{
       const rows=(c.lines||[]).map(l=>`<div class="cedo-row">
         <span class="k">${esc(l.kind)}${l.desc?` <span style="font-weight:400;color:var(--lbl2)">· ${esc(l.desc)}</span>`:''}</span>
-        ${l.hours!=null?`<span class="d">${mask(l.hours+' h')}</span>`:''}
+        ${l.hours!=null?`<span class="d">${l.hours} h</span>`:''}
         ${l.ref?`<span class="tag comp" style="font-size:11px">comp. ${monthLabel(l.ref,true)}</span>`:''}
-        ${l.amount!=null?`<span class="d tnum" style="margin-left:auto">€ ${mask((+l.amount).toFixed(2))}</span>`:''}
+        ${l.amount!=null?`<span class="d tnum" style="margin-left:auto">€ ${(+l.amount).toFixed(2)}</span>`:''}
       </div>`).join('');
       html+=`<div class="cedo">
         <div class="cedo-hd">
@@ -621,9 +628,6 @@ function viewInsoluto(){
   const pend=state.services.filter(s=>s.status==='attesa');
   if(!state.services.length) return emptyState('Nessun dato ancora','Inizia da "Inserisci" a registrare i tuoi servizi.','inserisci');
 
-  const oreTot=pend.filter(s=>s.cat==='ore').reduce((a,s)=>a+(+s.hours||0),0);
-  const cntTot=pend.filter(s=>s.cat==='conteggio').reduce((a,s)=>a+(+s.qty||0),0);
-
   const byComp={};
   pend.forEach(s=>{ const k=s.competence||'—'; byComp[k]=byComp[k]||{ore:0,cnt:0,n:0};
     if(s.cat==='ore') byComp[k].ore+=(+s.hours||0); else byComp[k].cnt+=(+s.qty||0); byComp[k].n++; });
@@ -631,17 +635,22 @@ function viewInsoluto(){
   // ← ORDINATO DAL PIÙ RECENTE
   const comps=Object.keys(byComp).sort().reverse();
 
+  // Totali: escludono i mesi disattivati con l'occhio
+  let oreTot=0, cntTot=0;
+  comps.forEach(k=>{ if(!hiddenMonths.includes(k)){ oreTot+=byComp[k].ore; cntTot+=byComp[k].cnt; } });
+
   const tableRows=comps.map(k=>{
-    const v=byComp[k], age=monthsAgo(k), old=age>=9;
-    return `<div class="ios-td">
-      <div class="main">${monthLabel(k,true)}${old?`<span class="tag warn" style="font-size:10px;padding:1px 6px">${age}m</span>`:''}</div>
-      <div class="r${old?' red':''}">${v.ore?mask(fmt(v.ore)+' h'):'—'}</div>
-      <div class="r" style="min-width:34px">${v.cnt?mask(v.cnt):'—'}</div>
+    const v=byComp[k], age=monthsAgo(k), old=age>=9, hidden=hiddenMonths.includes(k);
+    return `<div class="ios-td${hidden?' muted-row':''}">
+      <button class="eye-mini" data-month="${esc(k)}" title="${hidden?'Includi nel totale':'Escludi dal totale'}">${hidden?'🙈':'👁️'}</button>
+      <div class="main">${monthLabel(k,true)}${old&&!hidden?`<span class="tag warn" style="font-size:10px;padding:1px 6px">${age}m</span>`:''}</div>
+      <div class="r${old&&!hidden?' red':''}">${v.ore?fmt(v.ore)+' h':'—'}</div>
+      <div class="r" style="min-width:34px">${v.cnt||'—'}</div>
       <div class="r" style="min-width:28px;color:var(--lbl3)">${v.n}</div>
     </div>`;
   }).join('');
 
-  const oldest=[...pend].sort((a,b)=>(a.competence||'').localeCompare(b.competence||'')).filter(s=>monthsAgo(s.competence)>=9).slice(0,6);
+  const oldest=[...pend].filter(s=>!hiddenMonths.includes(s.competence||'—')).sort((a,b)=>(a.competence||'').localeCompare(b.competence||'')).filter(s=>monthsAgo(s.competence)>=9).slice(0,6);
 
   return `
 <div style="padding:0 0 8px">
@@ -653,15 +662,12 @@ function viewInsoluto(){
   </div>
   <div class="sh">${pend.length} voci in attesa · ${state.services.length} totali</div>
   <div class="widgets gap">
-    <div class="widget"><div class="wico">⏱</div><div class="wnum red">${mask(fmt(oreTot))}</div><div class="wlbl">ore da pagare</div></div>
-    <div class="widget"><div class="wico">🍽</div><div class="wnum red">${mask(cntTot)}</div><div class="wlbl">pasti / pernotti</div></div>
+    <div class="widget"><div class="wico">⏱</div><div class="wnum red">${fmt(oreTot)}</div><div class="wlbl">ore da pagare</div></div>
+    <div class="widget"><div class="wico">🍽</div><div class="wnum red">${cntTot}</div><div class="wlbl">pasti / pernotti</div></div>
   </div>
-  <div class="sh" style="display:flex;align-items:center;gap:6px">
-    <span style="flex:1">Per mese di competenza — dal più recente</span>
-    <button class="priv-btn" id="priv-toggle" title="Nascondi ore/pasti">${hideAmounts?'🙈':'👁️'}</button>
-  </div>
+  <div class="sh">Per mese di competenza — dal più recente · tocca 👁️ per escludere un mese dal totale</div>
   <div class="ios-tbl gap">
-    <div class="ios-th"><div style="flex:1">Competenza</div><div style="min-width:52px;text-align:right">Ore</div><div style="min-width:34px;text-align:right">Cnt</div><div style="min-width:28px;text-align:right;color:var(--lbl3)">N</div></div>
+    <div class="ios-th"><div style="width:20px"></div><div style="flex:1">Competenza</div><div style="min-width:52px;text-align:right">Ore</div><div style="min-width:34px;text-align:right">Cnt</div><div style="min-width:28px;text-align:right;color:var(--lbl3)">N</div></div>
     ${tableRows||'<div class="ios-td"><div class="main" style="color:var(--green)">Tutto pagato 🎉</div></div>'}
   </div>
   ${oldest.length?`<div class="sh">⏳ In ritardo da oltre 9 mesi</div><div class="svc-grid">`+oldest.map(svcCard).join('')+`</div>`:''}
@@ -779,7 +785,17 @@ function wireCedolini(){
     reconcileCedolino(id);
   };
   document.querySelectorAll('.c-recon').forEach(b=>b.onclick=()=>reconcileCedolino(b.dataset.id));
-  document.querySelectorAll('.c-del').forEach(b=>b.onclick=()=>{ if(confirm('Eliminare questo cedolino?')){ state.cedolini=state.cedolini.filter(c=>c.id!==b.dataset.id); save(); render(); }});
+  document.querySelectorAll('.c-del').forEach(b=>b.onclick=()=>{
+    const c=state.cedolini.find(x=>x.id===b.dataset.id); if(!c) return;
+    if(confirm('Eliminare questo cedolino? I servizi pagati da questo cedolino torneranno "in attesa".')){
+      const restored=state.services.filter(s=>s.status==='pagato'&&s.paidIn===c.month);
+      restored.forEach(s=>{ s.status='attesa'; s.paidIn=null; });
+      state.cedolini=state.cedolini.filter(x=>x.id!==c.id);
+      save();
+      toast(restored.length?`${restored.length} servizi tornati in attesa`:'Cedolino eliminato');
+      render();
+    }
+  });
 }
 function readDraft(){
   document.querySelectorAll('[data-i]').forEach(row=>{
@@ -793,12 +809,7 @@ function readDraft(){
 }
 
 function wireInsoluto(){
-  const pb=document.getElementById('priv-toggle');
-  if(pb) pb.onclick=()=>{
-    hideAmounts=!hideAmounts;
-    try{ localStorage.setItem('vvf_hide', hideAmounts?'1':'0'); }catch(e){}
-    render();
-  };
+  document.querySelectorAll('.eye-mini').forEach(b=>b.onclick=()=>{ toggleHiddenMonth(b.dataset.month); render(); });
   document.querySelectorAll('.t-pay').forEach( b=>b.onclick=()=>setStatus(b.dataset.id,'pagato'));
   document.querySelectorAll('.t-wait').forEach(b=>b.onclick=()=>setStatus(b.dataset.id,'attesa'));
   document.querySelectorAll('.t-del').forEach( b=>b.onclick=()=>{ state.services=state.services.filter(s=>s.id!==b.dataset.id); save(); render(); });
