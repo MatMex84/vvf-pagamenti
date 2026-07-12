@@ -6,366 +6,216 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Servizi Extra VVF</title>
 <style>
-/* ═══════════════════════════════════════════
-   iOS DESIGN SYSTEM
-═══════════════════════════════════════════ */
+/* ═══ TOKEN SISTEMA ═══ */
 :root {
-  --bg:        #F2F2F7;
-  --bg2:       #FFFFFF;
-  --lbl:       #000000;
-  --lbl2:      rgba(60,60,67,.60);
-  --lbl3:      rgba(60,60,67,.30);
-  --sep:       rgba(60,60,67,.22);
-  --sep-o:     #C6C6C8;
-  --fill:      rgba(120,120,128,.12);
-  --fill2:     rgba(120,120,128,.16);
-  --blue:      #007AFF;
-  --green:     #34C759;
-  --orange:    #FF9500;
-  --red-sys:   #FF3B30;
-  --vvf:       #C8102E;
-  --vvf-light: rgba(200,16,46,.10);
-  --sft: env(safe-area-inset-top,    0px);
-  --sfb: env(safe-area-inset-bottom, 0px);
-  --sfl: env(safe-area-inset-left,   0px);
-  --sfr: env(safe-area-inset-right,  0px);
+  --bg:    #F2F2F7;
+  --bg2:   #FFFFFF;
+  --lbl:   #000000;
+  --lbl2:  rgba(60,60,67,.60);
+  --lbl3:  rgba(60,60,67,.30);
+  --sep:   rgba(60,60,67,.22);
+  --sep-o: #C6C6C8;
+  --fill:  rgba(120,120,128,.12);
+  --fill2: rgba(120,120,128,.16);
+  --blue:  #007AFF;
+  --green: #34C759;
+  --orange:#FF9500;
+  --vvf:   #C8102E;
+  --vvf-bg:rgba(200,16,46,.10);
+  --sft:   env(safe-area-inset-top,0px);
+  --sfb:   env(safe-area-inset-bottom,0px);
 }
-*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-html, body {
-  height: 100%; background: var(--bg);
-  font-family: -apple-system, "SF Pro Text", "SF Pro Display", "Helvetica Neue", system-ui, sans-serif;
-  color: var(--lbl); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+/* ═══ DARK MODE ═══ */
+[data-dark] {
+  --bg:    #000000;
+  --bg2:   #1C1C1E;
+  --lbl:   #FFFFFF;
+  --lbl2:  rgba(235,235,245,.60);
+  --lbl3:  rgba(235,235,245,.25);
+  --sep:   rgba(84,84,88,.65);
+  --sep-o: #38383A;
+  --fill:  rgba(118,118,128,.36);
+  --fill2: rgba(118,118,128,.32);
+  --vvf:   #FF453A;
+  --vvf-bg:rgba(255,69,58,.15);
+  --green: #30D158;
+  --blue:  #0A84FF;
+  --orange:#FF9F0A;
 }
-body { padding-bottom: calc(50px + var(--sfb) + 34px); }
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);font-family:-apple-system,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;color:var(--lbl);-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+body{padding-bottom:calc(50px + var(--sfb) + 34px)}
 
-/* ── STATUS BAR AREA ── */
-.status-bar {
-  height: calc(var(--sft) + 0px);
-  background: rgba(242,242,247,.95);
-  position: sticky; top: 0; z-index: 101;
-}
+/* ═══ NAV BAR ═══ */
+.nav{position:sticky;top:var(--sft);z-index:100;background:rgba(242,242,247,.92);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.33px solid var(--sep);transition:background .3s}
+[data-dark] .nav{background:rgba(28,28,30,.92)}
+.nav-inner{display:flex;align-items:center;height:44px;padding:0 16px;gap:10px}
+.nav-flame{width:28px;height:28px;border-radius:7px;background:var(--vvf);display:grid;place-items:center;font-size:15px;flex:none;line-height:1;transition:background .3s}
+.nav-title{font-size:17px;font-weight:600;letter-spacing:-.3px;flex:1}
+.nav-saved{font-size:12px;font-weight:600;color:var(--green);opacity:0;transition:opacity .3s;white-space:nowrap}
+.nav-saved.show{opacity:1}
+.theme-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:4px;line-height:1}
 
-/* ── NAV BAR ── */
-.nav {
-  position: sticky; top: var(--sft); z-index: 100;
-  background: rgba(242,242,247,.92);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-          backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: .33px solid rgba(60,60,67,.29);
-}
-.nav-inner {
-  display: flex; align-items: center; height: 44px;
-  padding: 0 16px; gap: 10px;
-  padding-left: calc(16px + var(--sfl));
-  padding-right: calc(16px + var(--sfr));
-}
-.nav-flame {
-  width: 28px; height: 28px; border-radius: 7px;
-  background: var(--vvf); display: grid; place-items: center;
-  font-size: 15px; flex: none; line-height: 1;
-}
-.nav-title {
-  font-size: 17px; font-weight: 600; letter-spacing: -.3px; flex: 1;
-}
-.nav-saved {
-  font-size: 12px; font-weight: 600; color: var(--green);
-  opacity: 0; transition: opacity .3s; white-space: nowrap;
-}
-.nav-saved.show { opacity: 1; }
+/* ═══ MAIN ═══ */
+main{max-width:430px;margin:0 auto;padding:0 16px 12px}
 
-/* ── SCROLL AREA ── */
-main {
-  max-width: 430px; margin: 0 auto;
-  padding: 0 calc(16px + var(--sfl)) 12px calc(16px + var(--sfr));
-}
+/* ═══ LARGE TITLE ═══ */
+.large-title{padding:8px 0 4px;font-size:34px;font-weight:700;letter-spacing:-.4px;line-height:1.15}
 
-/* ── LARGE TITLE ── */
-.large-title {
-  padding: 8px 0 4px;
-  font-size: 34px; font-weight: 700;
-  letter-spacing: -.4px; line-height: 1.15;
-}
+/* ═══ SECTION ═══ */
+.sh{font-size:13px;color:var(--lbl2);padding:0 4px;margin:8px 0 5px}
+.sf{font-size:13px;color:var(--lbl2);padding:6px 4px 0;line-height:1.45}
 
-/* ── SECTION HEADER / FOOTER ── */
-.sh { font-size: 13px; color: var(--lbl2); letter-spacing: .04em; font-weight: 400; padding: 0 4px; margin: 8px 0 5px; }
-.sf { font-size: 13px; color: var(--lbl2); padding: 6px 4px 0; line-height: 1.45; }
+/* ═══ iOS GROUPED FORM ═══ */
+.ios-g{background:var(--bg2);border-radius:12px;overflow:hidden;margin-bottom:0;transition:background .3s}
+.ios-r{display:flex;align-items:center;min-height:48px;padding:0 16px;gap:12px;border-bottom:.33px solid var(--sep);position:relative}
+.ios-r:last-child{border-bottom:none}
+.ios-r label{font-size:16px;flex:none;min-width:86px;color:var(--lbl);padding:12px 0}
+.ios-r input,.ios-r select{flex:1;border:none;outline:none;font:inherit;font-size:16px;color:var(--blue);background:transparent;text-align:right;-webkit-appearance:none;appearance:none;min-width:0;padding:12px 0}
+.ios-r input[type="number"]{color:var(--lbl)}
+.ios-r input.calc{color:var(--green);font-weight:600}
+.ios-r input::placeholder{color:var(--lbl3);text-align:right}
+.ios-r textarea{flex:1;border:none;outline:none;font:inherit;font-size:15px;background:transparent;resize:none;min-height:76px;padding:12px 0;color:var(--lbl);line-height:1.45}
+.ios-r textarea::placeholder{color:var(--lbl3)}
+.ios-r.ta{align-items:flex-start}
+.time-note{font-size:11px;color:var(--green);padding:0 16px 8px;display:none}
+.time-note.show{display:block}
 
-/* ── iOS GROUPED FORM ── */
-.ios-g {
-  background: var(--bg2); border-radius: 12px; overflow: hidden;
-  margin-bottom: 0;
-}
-.ios-r {
-  display: flex; align-items: center; min-height: 48px;
-  padding: 0 16px; gap: 12px;
-  border-bottom: .33px solid var(--sep);
-  position: relative;
-}
-.ios-r:last-child { border-bottom: none; }
-.ios-r label {
-  font-size: 16px; flex: none; min-width: 86px; color: var(--lbl);
-  font-weight: 400; padding: 12px 0;
-}
-.ios-r input, .ios-r select {
-  flex: 1; border: none; outline: none; font: inherit; font-size: 16px;
-  color: var(--blue); background: transparent; text-align: right;
-  -webkit-appearance: none; appearance: none; min-width: 0; padding: 12px 0;
-}
-.ios-r input[type="number"] { color: var(--lbl); }
-.ios-r input::placeholder { color: var(--lbl3); text-align: right; }
-.ios-r textarea {
-  flex: 1; border: none; outline: none; font: inherit; font-size: 15px;
-  background: transparent; resize: none; min-height: 76px; padding: 12px 0;
-  color: var(--lbl); line-height: 1.45;
-}
-.ios-r textarea::placeholder { color: var(--lbl3); }
-.ios-r.ta { align-items: flex-start; }
+/* ═══ SEGMENTED ═══ */
+.seg{display:flex;background:rgba(118,118,128,.24);border-radius:9px;padding:2px;margin-bottom:14px}
+.seg button{flex:1;border:none;background:transparent;font:inherit;font-size:13px;font-weight:600;color:var(--lbl2);padding:6px 4px;border-radius:7px;cursor:pointer;transition:.15s;white-space:nowrap}
+.seg button.on{background:var(--bg2);color:var(--lbl);box-shadow:0 1px 2px rgba(0,0,0,.15)}
 
-/* ── SEGMENTED CONTROL ── */
-.seg {
-  display: flex; background: rgba(118,118,128,.24); border-radius: 9px;
-  padding: 2px; margin-bottom: 14px;
-}
-.seg button {
-  flex: 1; border: none; background: transparent; font: inherit;
-  font-size: 13px; font-weight: 600; color: var(--lbl2);
-  padding: 6px 4px; border-radius: 7px; cursor: pointer; transition: .15s;
-  white-space: nowrap; letter-spacing: -.1px;
-}
-.seg button.on {
-  background: var(--bg2); color: var(--lbl);
-  box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 1px 4px rgba(0,0,0,.07);
-}
+/* ═══ MONTH HEADER + DELETE ═══ */
+.month-hd{display:flex;align-items:center;gap:8px;padding:16px 4px 8px}
+.month-hd-lbl{font-size:13px;color:var(--lbl2);text-transform:uppercase;letter-spacing:.05em;font-weight:400;flex:1}
+.del-month-btn{background:none;border:none;font-size:11px;font-weight:600;color:var(--vvf);padding:4px 10px;border-radius:7px;background:var(--vvf-bg);cursor:pointer;letter-spacing:.01em;white-space:nowrap}
 
-/* ── SERVICE CARD ── */
-.month-hd {
-  font-size: 13px; color: var(--lbl2); text-transform: uppercase;
-  letter-spacing: .05em; font-weight: 400; margin: 18px 4px 6px;
-}
-.svc {
-  background: var(--bg2); border-radius: 12px; margin-bottom: 10px;
-  overflow: hidden; box-shadow: 0 1px 0 rgba(0,0,0,.04);
-}
-.svc-body { display: flex; align-items: flex-start; padding: 14px 16px; gap: 13px; }
-.svc-stripe {
-  width: 4px; height: 100%; border-radius: 3px; flex: none;
-  align-self: stretch; min-height: 48px;
-}
-.svc-stripe.wait { background: var(--vvf); }
-.svc-stripe.ok   { background: var(--green); }
-.svc-stripe.old  { background: var(--orange); }
-.svc-info { flex: 1; min-width: 0; }
-.svc-title { font-size: 16px; font-weight: 600; letter-spacing: -.2px; color: var(--lbl); }
-.svc-sub   { font-size: 13px; color: var(--lbl2); margin-top: 2px; }
-.svc-notes { font-size: 13px; color: var(--lbl2); margin-top: 4px; line-height: 1.35; }
-.svc-tags  { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
-.tag {
-  font-size: 11.5px; font-weight: 600; padding: 2px 8px;
-  border-radius: 5px; letter-spacing: .01em;
-}
-.tag.wait { background: rgba(200,16,46,.10); color: var(--vvf); }
-.tag.ok   { background: rgba(52,199,89,.12);  color: #1A8C3C; }
-.tag.warn { background: rgba(255,149,0,.12);  color: #C05000; }
-.tag.comp { background: var(--fill); color: var(--lbl2); }
-.svc-qty {
-  font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums;
-  letter-spacing: -1px; line-height: 1; flex: none; text-align: right;
-}
-.svc-qty small { font-size: 12px; font-weight: 500; color: var(--lbl2); display: block; text-align: right; letter-spacing: 0; }
-.svc-acts {
-  display: flex; border-top: .33px solid var(--sep);
-}
-.svc-acts button {
-  flex: 1; border: none; background: transparent; font: inherit;
-  font-size: 14px; font-weight: 600; padding: 12px 4px;
-  cursor: pointer; color: var(--blue); letter-spacing: -.2px;
-  transition: background .1s;
-}
-.svc-acts button:active { background: var(--fill); }
-.svc-acts button + button { border-left: .33px solid var(--sep); }
-.svc-acts button.red { color: var(--red-sys); }
-.svc-acts button.grn { color: var(--green); }
+/* ═══ SERVICE CARD ═══ */
+.svc{background:var(--bg2);border-radius:12px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04);transition:background .3s}
+.svc-body{display:flex;align-items:flex-start;padding:14px 16px;gap:13px}
+.svc-stripe{width:4px;height:100%;border-radius:3px;flex:none;align-self:stretch;min-height:48px}
+.svc-stripe.wait{background:var(--vvf)}
+.svc-stripe.ok{background:var(--green)}
+.svc-stripe.old{background:var(--orange)}
+.svc-info{flex:1;min-width:0}
+.svc-title{font-size:16px;font-weight:600;letter-spacing:-.2px;color:var(--lbl)}
+.svc-sub{font-size:13px;color:var(--lbl2);margin-top:2px}
+.svc-time{font-size:12px;color:var(--blue);margin-top:2px;font-weight:500}
+.svc-notes{font-size:13px;color:var(--lbl2);margin-top:4px;line-height:1.35}
+.svc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.tag{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:5px}
+.tag.wait{background:var(--vvf-bg);color:var(--vvf)}
+.tag.ok{background:rgba(52,199,89,.12);color:#1A8C3C}
+[data-dark] .tag.ok{background:rgba(48,209,88,.15);color:#30D158}
+.tag.warn{background:rgba(255,149,0,.12);color:#C05000}
+[data-dark] .tag.warn{color:#FF9F0A}
+.tag.comp{background:var(--fill);color:var(--lbl2)}
+.svc-qty{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-1px;line-height:1;flex:none;text-align:right}
+.svc-qty small{font-size:12px;font-weight:500;color:var(--lbl2);display:block;text-align:right;letter-spacing:0}
+.svc-acts{display:flex;border-top:.33px solid var(--sep)}
+.svc-acts button{flex:1;border:none;background:transparent;font:inherit;font-size:14px;font-weight:600;padding:12px 4px;cursor:pointer;color:var(--blue);transition:background .1s}
+.svc-acts button:active{background:var(--fill)}
+.svc-acts button+button{border-left:.33px solid var(--sep)}
+.svc-acts button.red{color:var(--vvf)}
+.svc-acts button.grn{color:var(--green)}
 
-/* ── BUTTONS ── */
-.btn-prim {
-  width: 100%; background: var(--vvf); color: #fff; border: none;
-  border-radius: 12px; font: inherit; font-size: 17px; font-weight: 600;
-  padding: 15px; cursor: pointer; letter-spacing: -.2px; transition: .12s;
-}
-.btn-prim:active { opacity: .82; transform: scale(.98); }
-.btn-ghost {
-  background: var(--bg2); color: var(--lbl); border: none;
-  border-radius: 10px; font: inherit; font-size: 14px; font-weight: 600;
-  padding: 11px 16px; cursor: pointer;
-}
-.btn-link  { background: transparent; color: var(--blue); border: none; font: inherit; font-size: 15px; font-weight: 600; padding: 9px 0; cursor: pointer; }
-.btn-sm    { background: var(--fill); color: var(--blue); border: none; border-radius: 8px; font: inherit; font-size: 13px; font-weight: 600; padding: 7px 14px; cursor: pointer; }
-.btn-sm.red { color: var(--red-sys); }
-.btn-sm.grn { color: var(--green); }
+/* ═══ BUTTONS ═══ */
+.btn-prim{width:100%;background:var(--vvf);color:#fff;border:none;border-radius:12px;font:inherit;font-size:17px;font-weight:600;padding:15px;cursor:pointer;letter-spacing:-.2px;transition:.12s}
+.btn-prim:active{opacity:.82;transform:scale(.98)}
+.btn-ghost{background:var(--bg2);color:var(--lbl);border:none;border-radius:10px;font:inherit;font-size:14px;font-weight:600;padding:11px 16px;cursor:pointer;transition:background .3s}
+.btn-sm{background:var(--fill);color:var(--blue);border:none;border-radius:8px;font:inherit;font-size:13px;font-weight:600;padding:7px 14px;cursor:pointer}
+.btn-sm.red{color:var(--vvf)}
+.btn-sm.grn{color:var(--green)}
 
-/* ── DASHBOARD WIDGETS ── */
-.widgets {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 6px;
-}
-.widget {
-  background: var(--bg2); border-radius: 16px; padding: 16px 16px 14px;
-  display: flex; flex-direction: column; gap: 2px;
-}
-.wico  { font-size: 20px; margin-bottom: 4px; }
-.wnum  { font-size: 40px; font-weight: 800; letter-spacing: -2px; font-variant-numeric: tabular-nums; line-height: 1; }
-.wnum.red    { color: var(--vvf); }
-.wnum.green  { color: var(--green); }
-.wlbl  { font-size: 12px; color: var(--lbl2); font-weight: 500; margin-top: 2px; }
+/* ═══ WIDGETS ═══ */
+.widgets{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:6px}
+.widget{background:var(--bg2);border-radius:16px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:2px;transition:background .3s}
+.wico{font-size:20px;margin-bottom:4px}
+.wnum{font-size:40px;font-weight:800;letter-spacing:-2px;font-variant-numeric:tabular-nums;line-height:1}
+.wnum.red{color:var(--vvf)}
+.wlbl{font-size:12px;color:var(--lbl2);font-weight:500;margin-top:2px}
 
-/* ── IOS TABLE (insoluto) ── */
-.ios-tbl { background: var(--bg2); border-radius: 12px; overflow: hidden; }
-.ios-th  {
-  display: flex; padding: 9px 16px 7px;
-  font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
-  color: var(--lbl2); border-bottom: .33px solid var(--sep);
-  font-weight: 400;
-}
-.ios-td {
-  display: flex; align-items: center; padding: 11px 16px;
-  border-bottom: .33px solid var(--sep); font-size: 15px; gap: 8px;
-}
-.ios-td:last-child { border-bottom: none; }
-.ios-td .main { flex: 1; font-weight: 400; display: flex; align-items: center; gap: 6px; }
-.ios-td .r {
-  font-variant-numeric: tabular-nums; font-weight: 600;
-  color: var(--lbl2); min-width: 44px; text-align: right;
-}
-.ios-td .r.red { color: var(--vvf); }
+/* ═══ INSOLUTO TABLE ═══ */
+.ios-tbl{background:var(--bg2);border-radius:12px;overflow:hidden;transition:background .3s}
+.ios-th{display:flex;padding:9px 16px 7px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--lbl2);border-bottom:.33px solid var(--sep)}
+.ios-td{display:flex;align-items:center;padding:11px 16px;border-bottom:.33px solid var(--sep);font-size:15px;gap:8px}
+.ios-td:last-child{border-bottom:none}
+.ios-td .main{flex:1;font-weight:400;display:flex;align-items:center;gap:6px}
+.ios-td .r{font-variant-numeric:tabular-nums;font-weight:600;color:var(--lbl2);min-width:44px;text-align:right}
+.ios-td .r.red{color:var(--vvf)}
 
-/* ── CEDOLINO BUILDER ── */
-.bldr-wrap { background: var(--bg2); border-radius: 12px; overflow: hidden; }
-.bldr-line { border-bottom: .33px solid var(--sep); }
-.bldr-line:last-child { border-bottom: none; }
-.bldr-grid { display: grid; grid-template-columns: 1fr 1fr; padding: 12px 16px; gap: 10px 14px; align-items: start; }
-.bldr-field label { font-size: 11px; color: var(--lbl2); text-transform: uppercase; letter-spacing: .06em; display: block; margin-bottom: 4px; }
-.bldr-field input, .bldr-field select {
-  border: none; outline: none; font: inherit; font-size: 15px;
-  width: 100%; background: transparent; -webkit-appearance: none;
-  color: var(--lbl); border-bottom: .5px solid var(--sep-o); padding-bottom: 3px;
-}
-.bldr-del { padding: 4px 16px 12px; }
+/* ═══ CEDOLINO BUILDER ═══ */
+.bldr-wrap{background:var(--bg2);border-radius:12px;overflow:hidden;transition:background .3s}
+.bldr-line{border-bottom:.33px solid var(--sep)}
+.bldr-line:last-child{border-bottom:none}
+.bldr-grid{display:grid;grid-template-columns:1fr 1fr;padding:12px 16px;gap:10px 14px;align-items:start}
+.bldr-field label{font-size:11px;color:var(--lbl2);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px}
+.bldr-field input,.bldr-field select{border:none;outline:none;font:inherit;font-size:15px;width:100%;background:transparent;-webkit-appearance:none;color:var(--lbl);border-bottom:.5px solid var(--sep-o);padding-bottom:3px}
+.bldr-del{padding:4px 16px 12px}
+.cedo{background:var(--bg2);border-radius:12px;overflow:hidden;margin-bottom:12px;box-shadow:0 1px 0 rgba(0,0,0,.04);transition:background .3s}
+.cedo-hd{display:flex;align-items:center;padding:14px 16px;border-bottom:.33px solid var(--sep);gap:10px}
+.cedo-hd strong{font-size:16px;font-weight:600;flex:1}
+.cedo-row{display:flex;align-items:center;padding:10px 16px;border-bottom:.33px solid var(--sep);font-size:14px;gap:8px;flex-wrap:wrap}
+.cedo-row:last-child{border-bottom:none}
+.cedo-row .k{font-weight:600;flex:1}
+.cedo-row .d{color:var(--lbl2);font-size:12px}
 
-/* ── CEDO CARD ── */
-.cedo {
-  background: var(--bg2); border-radius: 12px; overflow: hidden;
-  margin-bottom: 12px; box-shadow: 0 1px 0 rgba(0,0,0,.04);
-}
-.cedo-hd {
-  display: flex; align-items: center; padding: 14px 16px;
-  border-bottom: .33px solid var(--sep); gap: 10px;
-}
-.cedo-hd strong { font-size: 16px; font-weight: 600; flex: 1; }
-.cedo-row {
-  display: flex; align-items: center; padding: 10px 16px;
-  border-bottom: .33px solid var(--sep); font-size: 14px; gap: 8px;
-  flex-wrap: wrap;
-}
-.cedo-row:last-child { border-bottom: none; }
-.cedo-row .k { font-weight: 600; flex: 1; }
-.cedo-row .d { color: var(--lbl2); font-size: 12px; }
+/* ═══ TAB BAR ═══ */
+nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(249,249,249,.94);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:.33px solid var(--sep-o);padding-bottom:var(--sfb);display:flex;transition:background .3s}
+[data-dark] nav{background:rgba(28,28,30,.94)}
+nav button{flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px 4px;font:inherit}
+.tab-ic{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:21px;line-height:1}
+.tab-lbl{font-size:10px;font-weight:500;color:var(--lbl2);letter-spacing:.02em}
+nav button.on .tab-lbl{color:var(--vvf);font-weight:700}
+.topbar{display:flex;gap:8px;margin-bottom:10px}
+.topbar button{flex:1}
 
-/* ── TOPBAR ── */
-.topbar { display: flex; gap: 8px; margin-bottom: 10px; }
-.topbar button { flex: 1; }
+/* ═══ TOAST ═══ */
+.toast{position:fixed;left:50%;z-index:300;bottom:calc(62px + var(--sfb) + 10px);transform:translateX(-50%) translateY(6px);background:rgba(44,44,48,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;font-weight:600;letter-spacing:-.1px;opacity:0;transition:.2s cubic-bezier(.25,.46,.45,.94);pointer-events:none;white-space:nowrap;max-width:85%}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── EMPTY STATE ── */
-.empty { text-align: center; padding: 60px 20px 40px; }
-.empty .ico { font-size: 56px; margin-bottom: 14px; }
-.empty h3 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 8px; }
-.empty p  { font-size: 15px; color: var(--lbl2); margin-bottom: 24px; line-height: 1.5; }
-
-/* ── TAB BAR ── */
-nav {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-  background: rgba(249,249,249,.94);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-          backdrop-filter: saturate(180%) blur(20px);
-  border-top: .33px solid var(--sep-o);
-  padding-bottom: var(--sfb);
-  display: flex;
-}
-nav button {
-  flex: 1; background: none; border: none; cursor: pointer;
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  padding: 8px 2px 4px; font: inherit;
-}
-.tab-ic {
-  width: 28px; height: 28px; display: flex; align-items: center;
-  justify-content: center; font-size: 21px; line-height: 1;
-}
-.tab-lbl { font-size: 10px; font-weight: 500; color: var(--lbl2); letter-spacing: .02em; }
-nav button.on .tab-lbl { color: var(--vvf); font-weight: 700; }
-nav button.on .tab-ic  { filter: none; }
-
-/* ── TOAST ── */
-.toast {
-  position: fixed; left: 50%; z-index: 300;
-  bottom: calc(62px + var(--sfb) + 10px);
-  transform: translateX(-50%) translateY(6px);
-  background: rgba(44,44,48,.94);
-  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  color: #fff; padding: 11px 20px; border-radius: 999px;
-  font-size: 14px; font-weight: 600; letter-spacing: -.1px;
-  opacity: 0; transition: .2s cubic-bezier(.25,.46,.45,.94);
-  pointer-events: none; white-space: nowrap; max-width: 85%;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* ═══ EMPTY STATE ═══ */
+.empty{text-align:center;padding:60px 20px 40px}
+.empty .ico{font-size:56px;margin-bottom:14px}
+.empty h3{font-size:20px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px}
+.empty p{font-size:15px;color:var(--lbl2);margin-bottom:24px;line-height:1.5}
 
 /* utils */
-.tnum { font-variant-numeric: tabular-nums; }
-.gap { margin-bottom: 20px; }
-.gap-sm { margin-bottom: 10px; }
-.mt { margin-top: 20px; }
-.mt-sm { margin-top: 10px; }
+.tnum{font-variant-numeric:tabular-nums}
+.gap{margin-bottom:20px}
+.gap-sm{margin-bottom:10px}
+.mt{margin-top:20px}
+.mt-sm{margin-top:10px}
 </style>
 
-<!-- NAV BAR -->
 <div class="nav">
   <div class="nav-inner">
     <div class="nav-flame">🔥</div>
     <div class="nav-title" id="nav-title">Insoluto</div>
+    <button class="theme-btn" id="theme-toggle" title="Tema">🌙</button>
     <div class="nav-saved" id="saved">✓ salvato</div>
   </div>
 </div>
 
 <main id="app"></main>
 
-<!-- TAB BAR -->
 <nav id="tab-bar">
-  <button data-tab="insoluto" class="on">
-    <span class="tab-ic">📊</span>
-    <span class="tab-lbl">Insoluto</span>
-  </button>
-  <button data-tab="inserisci">
-    <span class="tab-ic">＋</span>
-    <span class="tab-lbl">Inserisci</span>
-  </button>
-  <button data-tab="servizi">
-    <span class="tab-ic">📋</span>
-    <span class="tab-lbl">Servizi</span>
-  </button>
-  <button data-tab="cedolini">
-    <span class="tab-ic">🧾</span>
-    <span class="tab-lbl">Cedolini</span>
-  </button>
+  <button data-tab="insoluto" class="on"><span class="tab-ic">📊</span><span class="tab-lbl">Insoluto</span></button>
+  <button data-tab="inserisci"><span class="tab-ic">＋</span><span class="tab-lbl">Inserisci</span></button>
+  <button data-tab="servizi"><span class="tab-ic">📋</span><span class="tab-lbl">Servizi</span></button>
+  <button data-tab="cedolini"><span class="tab-ic">🧾</span><span class="tab-lbl">Cedolini</span></button>
 </nav>
-
 <div class="toast" id="toast"></div>
 
 <script>
-/* ═══════════ STATE ═══════════ */
+/* ═══ STATE ═══ */
 const KEY = 'vvf_tracker_v1';
 let state   = { services: [], cedolini: [] };
 let tab     = 'insoluto';
 let filter  = 'attesa';
 let draftLines = [];
-const hasStore = typeof window !== 'undefined' && window.storage && typeof window.storage.get === 'function';
-
+const hasStore = typeof window!=='undefined' && window.storage && typeof window.storage.get==='function';
 const TIPI = [
   ['Straordinario','ore'],['TDF','ore'],['Integrazione nucleo','ore'],
   ['SAPR','ore'],['Boschiva (AIB)','ore'],['Imenotteri','ore'],['MORECS','ore'],
@@ -374,72 +224,91 @@ const TIPI = [
   ['Mancato pasto','conteggio'],['Mancato pernotto','conteggio'],['Buoni pasto','conteggio'],
   ['Altro','ore']
 ];
-const catOf = t => (TIPI.find(x => x[0] === t) || ['','ore'])[1];
-const MESI   = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
-const MESI_S = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
-const tabTitles = { insoluto:'Insoluto', inserisci:'Nuovo servizio', servizi:'Servizi', cedolini:'Cedolini' };
+const catOf = t => (TIPI.find(x=>x[0]===t)||['','ore'])[1];
+const MESI  = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+const MESI_S= ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+const tabTitles = {insoluto:'Insoluto',inserisci:'Nuovo servizio',servizi:'Servizi',cedolini:'Cedolini'};
 
-/* ═══════════ PERSISTENCE ═══════════ */
-/* ═══════════ DATI STORICI (caricati solo al primo avvio) ═══════════ */
+/* ═══ DATI STORICI ═══ */
 const INITIAL_DATA = {"services":[{"id":"s001","date":"2024-11-17","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"","competence":"2024-11","status":"attesa","paidIn":null,"notes":""},{"id":"s002","date":"2024-11-18","type":"Integrazione nucleo","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2024-11","status":"attesa","paidIn":null,"notes":""},{"id":"s003","date":"2024-11-18","type":"Straordinario","other":"","cat":"ore","hours":5,"qty":null,"location":"Ercolano","competence":"2024-11","status":"attesa","paidIn":null,"notes":"fono 5238 · 5:04h"},{"id":"s004","date":"2024-11-18","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Ercolano","competence":"2024-11","status":"attesa","paidIn":null,"notes":""},{"id":"s005","date":"2024-12-03","type":"Integrazione nucleo","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2024-12","status":"attesa","paidIn":null,"notes":""},{"id":"s006","date":"2024-12-11","type":"Straordinario","other":"","cat":"ore","hours":26,"qty":null,"location":"Benevento","competence":"2024-12","status":"attesa","paidIn":null,"notes":"Formazione TAS2"},{"id":"s007","date":"2024-12-12","type":"Straordinario","other":"","cat":"ore","hours":0,"qty":null,"location":"","competence":"2024-12","status":"attesa","paidIn":null,"notes":"Retraining USAR - ore da confermare"},{"id":"s008","date":"2024-12-16","type":"Integrazione nucleo","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2024-12","status":"attesa","paidIn":null,"notes":"SAPR"},{"id":"s009","date":"2025-01-04","type":"Straordinario","other":"","cat":"ore","hours":0,"qty":null,"location":"Torre Orsaia (SA)","competence":"2025-01","status":"attesa","paidIn":null,"notes":"ore da confermare"},{"id":"s010","date":"2025-02-14","type":"Straordinario","other":"","cat":"ore","hours":0,"qty":null,"location":"Parolisi","competence":"2025-02","status":"attesa","paidIn":null,"notes":"fono 438"},{"id":"s011","date":"2025-02-14","type":"Mancato pernotto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Parolisi","competence":"2025-11","status":"attesa","paidIn":null,"notes":"comp. 11/25"},{"id":"s012","date":"2025-02-17","type":"Corso / Addestramento","other":"","cat":"ore","hours":10,"qty":null,"location":"Napoli","competence":"2025-02","status":"attesa","paidIn":null,"notes":"Corso TAS"},{"id":"s013","date":"2025-03-06","type":"Corso / Addestramento","other":"","cat":"ore","hours":6,"qty":null,"location":"","competence":"2025-03","status":"attesa","paidIn":null,"notes":"Addestramento TAS formatore"},{"id":"s014","date":"2025-03-07","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"","competence":"2025-03","status":"attesa","paidIn":null,"notes":""},{"id":"s015","date":"2025-03-11","type":"TDF","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-03","status":"attesa","paidIn":null,"notes":"DDS 049"},{"id":"s016","date":"2025-03-11","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"","competence":"2025-11","status":"attesa","paidIn":null,"notes":"TDF · comp. 11/25"},{"id":"s017","date":"2025-03-12","type":"Corso / Addestramento","other":"","cat":"ore","hours":9,"qty":null,"location":"","competence":"2025-03","status":"attesa","paidIn":null,"notes":"Addestramento USAR"},{"id":"s018","date":"2025-03-15","type":"TDF","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-03","status":"attesa","paidIn":null,"notes":""},{"id":"s019","date":"2025-03-15","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"","competence":"2025-03","status":"attesa","paidIn":null,"notes":""},{"id":"s020","date":"2025-03-17","type":"Straordinario","other":"","cat":"ore","hours":10,"qty":null,"location":"Napoli","competence":"2025-03","status":"attesa","paidIn":null,"notes":"Formazione TAS"},{"id":"s021","date":"2025-03-17","type":"Ore guida","other":"","cat":"ore","hours":0,"qty":null,"location":"Napoli","competence":"2025-03","status":"attesa","paidIn":null,"notes":"TAS 99esimo - ore da confermare"},{"id":"s022","date":"2025-03-24","type":"MORECS","other":"","cat":"ore","hours":14,"qty":null,"location":"Napoli","competence":"2025-03","status":"attesa","paidIn":null,"notes":""},{"id":"s023","date":"2025-03-24","type":"Buoni pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"","competence":"2025-03","status":"attesa","paidIn":null,"notes":"MORECS"},{"id":"s024","date":"2025-03-27","type":"TDF","other":"","cat":"ore","hours":12,"qty":null,"location":"Alife","competence":"2025-03","status":"attesa","paidIn":null,"notes":""},{"id":"s025","date":"2025-03-27","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"","competence":"2025-11","status":"attesa","paidIn":null,"notes":"comp. 11/25"},{"id":"s026","date":"2025-04-22","type":"Straordinario","other":"","cat":"ore","hours":3,"qty":null,"location":"Castellammare","competence":"2025-04","status":"attesa","paidIn":null,"notes":""},{"id":"s027","date":"2025-04-22","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"Castellammare","competence":"2025-04","status":"attesa","paidIn":null,"notes":""},{"id":"s028","date":"2025-04-24","type":"TDF","other":"","cat":"ore","hours":13.5,"qty":null,"location":"","competence":"2025-04","status":"attesa","paidIn":null,"notes":"DDS81 · 13:30h"},{"id":"s029","date":"2025-04-24","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"","competence":"2025-04","status":"attesa","paidIn":null,"notes":""},{"id":"s030","date":"2025-04-26","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"Castellammare","competence":"2025-04","status":"attesa","paidIn":null,"notes":"anticipo"},{"id":"s031","date":"2025-04-26","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"Castellammare","competence":"2025-04","status":"attesa","paidIn":null,"notes":""},{"id":"s032","date":"2025-04-28","type":"Straordinario","other":"","cat":"ore","hours":15,"qty":null,"location":"Castellammare","competence":"2025-04","status":"attesa","paidIn":null,"notes":"8-23"},{"id":"s033","date":"2025-04-28","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"Castellammare","competence":"2025-04","status":"attesa","paidIn":null,"notes":""},{"id":"s034","date":"2025-05-02","type":"TDF","other":"","cat":"ore","hours":14,"qty":null,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":"08-22:07"},{"id":"s035","date":"2025-05-02","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":""},{"id":"s036","date":"2025-05-09","type":"Straordinario","other":"","cat":"ore","hours":10,"qty":null,"location":"Benevento","competence":"2025-05","status":"attesa","paidIn":null,"notes":"Corso TAS"},{"id":"s037","date":"2025-05-10","type":"TDF","other":"","cat":"ore","hours":13.5,"qty":null,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":"13:20h"},{"id":"s038","date":"2025-05-10","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":"TDF"},{"id":"s039","date":"2025-05-14","type":"TDF","other":"","cat":"ore","hours":13,"qty":null,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":"13:05h"},{"id":"s040","date":"2025-05-14","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":"TDF"},{"id":"s041","date":"2025-05-16","type":"TDF","other":"","cat":"ore","hours":13,"qty":null,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":"13:10h"},{"id":"s042","date":"2025-05-16","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":"TDF"},{"id":"s043","date":"2025-05-24","type":"Straordinario","other":"","cat":"ore","hours":5,"qty":null,"location":"Castellammare","competence":"2025-05","status":"attesa","paidIn":null,"notes":""},{"id":"s044","date":"2025-05-24","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"Castellammare","competence":"2025-05","status":"attesa","paidIn":null,"notes":""},{"id":"s045","date":"2025-05-26","type":"TDF","other":"","cat":"ore","hours":13,"qty":null,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":""},{"id":"s046","date":"2025-05-26","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":"TDF"},{"id":"s047","date":"2025-05-27","type":"SAF","other":"","cat":"ore","hours":5,"qty":null,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":""},{"id":"s048","date":"2025-05-28","type":"Straordinario","other":"","cat":"ore","hours":7,"qty":null,"location":"Interporto Nola","competence":"2025-05","status":"attesa","paidIn":null,"notes":""},{"id":"s049","date":"2025-05-30","type":"TDF","other":"","cat":"ore","hours":13,"qty":null,"location":"Pomigliano d'Arco","competence":"2025-05","status":"attesa","paidIn":null,"notes":""},{"id":"s050","date":"2025-05-30","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":"fono 1523"},{"id":"s051","date":"2025-05-31","type":"SAF","other":"","cat":"ore","hours":5,"qty":null,"location":"","competence":"2025-05","status":"attesa","paidIn":null,"notes":"Prova"},{"id":"s052","date":"2025-06-02","type":"SAF","other":"","cat":"ore","hours":5,"qty":null,"location":"","competence":"2025-06","status":"attesa","paidIn":null,"notes":""},{"id":"s053","date":"2025-06-13","type":"Straordinario","other":"","cat":"ore","hours":3,"qty":null,"location":"Ercolano","competence":"2025-12","status":"attesa","paidIn":null,"notes":"comp. 12/25"},{"id":"s054","date":"2025-06-13","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"Ercolano","competence":"2025-06","status":"attesa","paidIn":null,"notes":""},{"id":"s055","date":"2025-06-15","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"","competence":"2025-06","status":"attesa","paidIn":null,"notes":"intervento"},{"id":"s056","date":"2025-06-15","type":"Vigilanza","other":"","cat":"ore","hours":3,"qty":null,"location":"Teatro Romano","competence":"2025-06","status":"attesa","paidIn":null,"notes":""},{"id":"s057","date":"2025-06-17","type":"Integrazione nucleo","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-06","status":"attesa","paidIn":null,"notes":"SAPR"},{"id":"s058","date":"2025-06-17","type":"Buoni pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"","competence":"2025-06","status":"attesa","paidIn":null,"notes":"sera"},{"id":"s059","date":"2025-06-20","type":"Imenotteri","other":"","cat":"ore","hours":6,"qty":null,"location":"","competence":"2025-06","status":"attesa","paidIn":null,"notes":""},{"id":"s060","date":"2025-06-21","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"Angri","competence":"2025-06","status":"attesa","paidIn":null,"notes":""},{"id":"s061","date":"2025-06-26","type":"Straordinario","other":"","cat":"ore","hours":3,"qty":null,"location":"","competence":"2025-06","status":"attesa","paidIn":null,"notes":"intervento"},{"id":"s062","date":"2025-07-14","type":"Integrazione nucleo","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":"SAPR · comp. 12/25"},{"id":"s063","date":"2025-07-14","type":"Buoni pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":"comp. 12/25"},{"id":"s064","date":"2025-07-14","type":"Ore guida","other":"","cat":"ore","hours":2,"qty":null,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":"Giugno · comp. 12/25"},{"id":"s065","date":"2025-07-18","type":"Boschiva (AIB)","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-07","status":"attesa","paidIn":null,"notes":""},{"id":"s066","date":"2025-07-19","type":"Straordinario","other":"","cat":"ore","hours":2,"qty":null,"location":"Manfredonia","competence":"2025-12","status":"attesa","paidIn":null,"notes":"comp. 12/25"},{"id":"s067","date":"2025-07-19","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Manfredonia","competence":"2025-12","status":"attesa","paidIn":null,"notes":"comp. 12/25"},{"id":"s068","date":"2025-07-22","type":"Boschiva (AIB)","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-07","status":"attesa","paidIn":null,"notes":""},{"id":"s069","date":"2025-07-23","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":"comp. 12/25"},{"id":"s070","date":"2025-07-25","type":"Straordinario","other":"","cat":"ore","hours":3,"qty":null,"location":"Recale","competence":"2025-12","status":"attesa","paidIn":null,"notes":"fono 2855 · comp. 12/25"},{"id":"s071","date":"2025-07-27","type":"Straordinario","other":"","cat":"ore","hours":2,"qty":null,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":"prima · comp. 12/25"},{"id":"s072","date":"2025-07-29","type":"Vigilanza","other":"","cat":"ore","hours":3,"qty":null,"location":"Teatro Romano","competence":"2025-07","status":"attesa","paidIn":null,"notes":""},{"id":"s073","date":"2025-07-30","type":"Imenotteri","other":"","cat":"ore","hours":6,"qty":null,"location":"","competence":"2025-07","status":"attesa","paidIn":null,"notes":""},{"id":"s074","date":"2025-08-03","type":"Boschiva (AIB)","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-08","status":"attesa","paidIn":null,"notes":""},{"id":"s075","date":"2025-08-04","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"Napoli","competence":"2025-08","status":"attesa","paidIn":null,"notes":"ricerca cane"},{"id":"s076","date":"2025-08-07","type":"Imenotteri","other":"","cat":"ore","hours":6,"qty":null,"location":"","competence":"2025-08","status":"attesa","paidIn":null,"notes":""},{"id":"s077","date":"2025-08-10","type":"Straordinario","other":"","cat":"ore","hours":5,"qty":null,"location":"Terzigno Vesuvio","competence":"2025-08","status":"attesa","paidIn":null,"notes":"5:30h"},{"id":"s078","date":"2025-08-11","type":"TDF","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-08","status":"attesa","paidIn":null,"notes":""},{"id":"s079","date":"2025-08-14","type":"Straordinario","other":"","cat":"ore","hours":4,"qty":null,"location":"Baselice","competence":"2025-08","status":"attesa","paidIn":null,"notes":"8-11:30"},{"id":"s080","date":"2025-08-15","type":"Boschiva (AIB)","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-08","status":"attesa","paidIn":null,"notes":""},{"id":"s081","date":"2025-08-16","type":"Straordinario","other":"","cat":"ore","hours":5,"qty":null,"location":"Baselice","competence":"2025-08","status":"attesa","paidIn":null,"notes":"20-01:00"},{"id":"s082","date":"2025-08-16","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Baselice","competence":"2025-12","status":"attesa","paidIn":null,"notes":"comp. 12/25"},{"id":"s083","date":"2025-08-19","type":"Integrazione nucleo","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-08","status":"attesa","paidIn":null,"notes":""},{"id":"s084","date":"2025-08-26","type":"Straordinario","other":"","cat":"ore","hours":26,"qty":null,"location":"","competence":"2025-08","status":"attesa","paidIn":null,"notes":"19:19 del 26 alle 21:30 del 27"},{"id":"s085","date":"2025-08-26","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":"26 e 27 · fono 3875 · comp. 12/25"},{"id":"s086","date":"2025-08-28","type":"Straordinario","other":"","cat":"ore","hours":3,"qty":null,"location":"Sant'Angelo dei Lombardi","competence":"2025-08","status":"attesa","paidIn":null,"notes":"3:30h"},{"id":"s087","date":"2025-08-28","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Sant'Angelo dei Lombardi","competence":"2025-12","status":"attesa","paidIn":null,"notes":"comp. 12/25"},{"id":"s088","date":"2025-08-31","type":"Boschiva (AIB)","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-08","status":"attesa","paidIn":null,"notes":""},{"id":"s089","date":"2025-09-01","type":"Ore guida","other":"","cat":"ore","hours":3,"qty":null,"location":"","competence":"2025-09","status":"attesa","paidIn":null,"notes":"Agosto"},{"id":"s090","date":"2025-09-01","type":"Corso / Addestramento","other":"","cat":"ore","hours":5,"qty":null,"location":"","competence":"2025-09","status":"attesa","paidIn":null,"notes":"Banca ore TAS"},{"id":"s091","date":"2025-09-01","type":"Straordinario","other":"","cat":"ore","hours":10,"qty":null,"location":"Napoli","competence":"2025-09","status":"attesa","paidIn":null,"notes":"Corso TAS"},{"id":"s092","date":"2025-09-08","type":"Boschiva (AIB)","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-09","status":"attesa","paidIn":null,"notes":""},{"id":"s093","date":"2025-09-10","type":"Straordinario","other":"","cat":"ore","hours":8,"qty":null,"location":"San Potito Sannitico","competence":"2025-09","status":"attesa","paidIn":null,"notes":"8:15h"},{"id":"s094","date":"2025-09-10","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"San Potito Sannitico","competence":"2025-12","status":"attesa","paidIn":null,"notes":"comp. 12/25"},{"id":"s095","date":"2025-09-10","type":"Mancato pernotto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"San Potito Sannitico","competence":"2025-09","status":"attesa","paidIn":null,"notes":""},{"id":"s096","date":"2025-09-13","type":"Straordinario","other":"","cat":"ore","hours":6,"qty":null,"location":"Pianura","competence":"2025-09","status":"attesa","paidIn":null,"notes":"5:30h"},{"id":"s097","date":"2025-09-13","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Pianura","competence":"2025-09","status":"attesa","paidIn":null,"notes":"fono 4396"},{"id":"s098","date":"2025-09-13","type":"Mancato pernotto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Pianura","competence":"2025-09","status":"attesa","paidIn":null,"notes":"fono 4396"},{"id":"s099","date":"2025-09-17","type":"TDF","other":"","cat":"ore","hours":5,"qty":null,"location":"Pianura","competence":"2025-09","status":"attesa","paidIn":null,"notes":"4:45h"},{"id":"s100","date":"2025-09-17","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Pianura","competence":"2025-09","status":"attesa","paidIn":null,"notes":""},{"id":"s101","date":"2025-09-28","type":"Vigilanza","other":"","cat":"ore","hours":7,"qty":null,"location":"","competence":"2025-11","status":"attesa","paidIn":null,"notes":"comp. 11/25"},{"id":"s102","date":"2025-09-29","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"","competence":"2025-09","status":"attesa","paidIn":null,"notes":""},{"id":"s103","date":"2025-09-30","type":"Ore guida","other":"","cat":"ore","hours":10,"qty":null,"location":"","competence":"2025-09","status":"attesa","paidIn":null,"notes":"Settembre"},{"id":"s104","date":"2025-10-05","type":"Straordinario","other":"","cat":"ore","hours":2,"qty":null,"location":"","competence":"2025-10","status":"attesa","paidIn":null,"notes":""},{"id":"s105","date":"2025-10-06","type":"Straordinario","other":"","cat":"ore","hours":23,"qty":null,"location":"","competence":"2025-10","status":"attesa","paidIn":null,"notes":""},{"id":"s106","date":"2025-10-12","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"","competence":"2025-10","status":"attesa","paidIn":null,"notes":"€55,50 x2"},{"id":"s107","date":"2025-10-12","type":"Straordinario","other":"","cat":"ore","hours":32,"qty":null,"location":"Nuoro / Sardegna","competence":"2025-10","status":"attesa","paidIn":null,"notes":"EXE"},{"id":"s108","date":"2025-10-19","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"","competence":"2025-10","status":"attesa","paidIn":null,"notes":""},{"id":"s109","date":"2025-10-20","type":"Straordinario","other":"","cat":"ore","hours":9.5,"qty":null,"location":"Popoli Pescara","competence":"2025-10","status":"attesa","paidIn":null,"notes":"8-17:30"},{"id":"s110","date":"2025-10-20","type":"Mancato pernotto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Popoli","competence":"2025-10","status":"attesa","paidIn":null,"notes":""},{"id":"s111","date":"2025-10-22","type":"Corso / Addestramento","other":"","cat":"ore","hours":9,"qty":null,"location":"","competence":"2025-10","status":"attesa","paidIn":null,"notes":"Addestramento USAR"},{"id":"s112","date":"2025-10-28","type":"Ore guida","other":"","cat":"ore","hours":23,"qty":null,"location":"","competence":"2025-10","status":"attesa","paidIn":null,"notes":"Ottobre"},{"id":"s113","date":"2025-10-30","type":"Imenotteri","other":"","cat":"ore","hours":6,"qty":null,"location":"","competence":"2025-10","status":"attesa","paidIn":null,"notes":""},{"id":"s114","date":"2025-11-04","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"","competence":"2025-11","status":"attesa","paidIn":null,"notes":""},{"id":"s115","date":"2025-11-06","type":"SAPR","other":"","cat":"ore","hours":8,"qty":null,"location":"Montecorvino Rovella (SA)","competence":"2025-11","status":"attesa","paidIn":null,"notes":"fono 5547"},{"id":"s116","date":"2025-11-06","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Montecorvino Rovella","competence":"2025-11","status":"attesa","paidIn":null,"notes":""},{"id":"s117","date":"2025-11-06","type":"Mancato pernotto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Montecorvino Rovella","competence":"2025-11","status":"attesa","paidIn":null,"notes":""},{"id":"s118","date":"2025-11-09","type":"Ore guida","other":"","cat":"ore","hours":2,"qty":null,"location":"","competence":"2025-11","status":"attesa","paidIn":null,"notes":"Luglio"},{"id":"s119","date":"2025-11-11","type":"SAPR","other":"","cat":"ore","hours":13,"qty":null,"location":"Faito","competence":"2025-11","status":"attesa","paidIn":null,"notes":"7-20:30 · fono 5596"},{"id":"s120","date":"2025-11-12","type":"Straordinario","other":"","cat":"ore","hours":4,"qty":null,"location":"Bosco Capodimonte","competence":"2025-11","status":"attesa","paidIn":null,"notes":"fono 5614"},{"id":"s121","date":"2025-11-12","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Bosco Capodimonte","competence":"2025-11","status":"attesa","paidIn":null,"notes":""},{"id":"s122","date":"2025-11-13","type":"SAPR","other":"","cat":"ore","hours":13,"qty":null,"location":"Faito","competence":"2025-11","status":"attesa","paidIn":null,"notes":"7-20:00 · fono 5619"},{"id":"s123","date":"2025-11-16","type":"SAPR","other":"","cat":"ore","hours":3,"qty":null,"location":"Campobasso","competence":"2025-11","status":"attesa","paidIn":null,"notes":"20-22:30 · fono 5659"},{"id":"s124","date":"2025-11-16","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Campobasso","competence":"2025-11","status":"attesa","paidIn":null,"notes":""},{"id":"s125","date":"2025-11-17","type":"Straordinario","other":"","cat":"ore","hours":20,"qty":null,"location":"","competence":"2025-11","status":"attesa","paidIn":null,"notes":"Corso TAS2"},{"id":"s126","date":"2025-12-02","type":"Ore guida","other":"","cat":"ore","hours":20,"qty":null,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":"Novembre 2025"},{"id":"s127","date":"2025-12-02","type":"Straordinario","other":"","cat":"ore","hours":20,"qty":null,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":"Corso TAS2 · 17-28"},{"id":"s128","date":"2025-12-09","type":"Integrazione nucleo","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":"SAPR"},{"id":"s129","date":"2025-12-13","type":"Integrazione nucleo","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":"SAPR"},{"id":"s130","date":"2025-12-17","type":"Integrazione nucleo","other":"","cat":"ore","hours":12,"qty":null,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":"SAPR"},{"id":"s131","date":"2025-12-22","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":""},{"id":"s132","date":"2025-12-31","type":"Straordinario","other":"","cat":"ore","hours":2,"qty":null,"location":"","competence":"2025-12","status":"attesa","paidIn":null,"notes":""},{"id":"s133","date":"2026-01-07","type":"Sostituzione","other":"","cat":"ore","hours":0,"qty":null,"location":"Bonea","competence":"2026-01","status":"attesa","paidIn":null,"notes":"ore guida incluse"},{"id":"s134","date":"2026-01-07","type":"Buoni pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"Bonea","competence":"2026-01","status":"attesa","paidIn":null,"notes":"sostituzione"},{"id":"s135","date":"2026-01-07","type":"Ore guida","other":"","cat":"ore","hours":1,"qty":null,"location":"Bonea","competence":"2026-01","status":"attesa","paidIn":null,"notes":"sostituzione"},{"id":"s136","date":"2026-01-08","type":"Straordinario","other":"","cat":"ore","hours":1,"qty":null,"location":"","competence":"2026-01","status":"attesa","paidIn":null,"notes":""},{"id":"s137","date":"2026-01-22","type":"Straordinario","other":"","cat":"ore","hours":5,"qty":null,"location":"","competence":"2026-03","status":"attesa","paidIn":null,"notes":"collaudo scale · comp. 3/26"},{"id":"s138","date":"2026-01-31","type":"Straordinario","other":"","cat":"ore","hours":4,"qty":null,"location":"","competence":"2026-01","status":"attesa","paidIn":null,"notes":""},{"id":"s139","date":"2026-02-06","type":"Vigilanza","other":"","cat":"ore","hours":4,"qty":null,"location":"","competence":"2026-02","status":"attesa","paidIn":null,"notes":""},{"id":"s140","date":"2026-02-11","type":"TDF","other":"","cat":"ore","hours":10,"qty":null,"location":"Monte Faito","competence":"2026-02","status":"attesa","paidIn":null,"notes":"8-18"},{"id":"s141","date":"2026-02-11","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Monte Faito","competence":"2026-02","status":"attesa","paidIn":null,"notes":""},{"id":"s142","date":"2026-02-24","type":"SAPR","other":"","cat":"ore","hours":3,"qty":null,"location":"Rocca d'Evandro","competence":"2026-02","status":"attesa","paidIn":null,"notes":"f.612"},{"id":"s143","date":"2026-02-24","type":"Mancato pasto","other":"","cat":"conteggio","hours":null,"qty":1,"location":"Rocca d'Evandro","competence":"2026-02","status":"attesa","paidIn":null,"notes":""},{"id":"s144","date":"2026-02-26","type":"Ore guida","other":"","cat":"ore","hours":11,"qty":null,"location":"","competence":"2026-02","status":"attesa","paidIn":null,"notes":"Febbraio"},{"id":"s145","date":"2026-03-04","type":"Straordinario","other":"","cat":"ore","hours":2,"qty":null,"location":"Bonea","competence":"2026-03","status":"attesa","paidIn":null,"notes":""},{"id":"s146","date":"2026-03-04","type":"Buoni pasto","other":"","cat":"conteggio","hours":null,"qty":2,"location":"Bonea","competence":"2026-03","status":"attesa","paidIn":null,"notes":"sostituzione"},{"id":"s147","date":"2026-03-08","type":"Straordinario","other":"","cat":"ore","hours":2,"qty":null,"location":"","competence":"2026-03","status":"attesa","paidIn":null,"notes":""},{"id":"s148","date":"2026-03-09","type":"Corso / Addestramento","other":"","cat":"ore","hours":10,"qty":null,"location":"Napoli","competence":"2026-03","status":"attesa","paidIn":null,"notes":"TAS 9-13"},{"id":"s149","date":"2026-03-16","type":"Corso / Addestramento","other":"","cat":"ore","hours":10,"qty":null,"location":"Benevento","competence":"2026-03","status":"attesa","paidIn":null,"notes":"TAS 16-20"},{"id":"s150","date":"2026-03-30","type":"Ore guida","other":"","cat":"ore","hours":11,"qty":null,"location":"","competence":"2026-03","status":"attesa","paidIn":null,"notes":"Marzo"},{"id":"s151","date":"2026-03-31","type":"Corso / Addestramento","other":"","cat":"ore","hours":0,"qty":null,"location":"","competence":"2026-03","status":"attesa","paidIn":null,"notes":"Retraining USAR - ore da confermare"},{"id":"s152","date":"2026-04-13","type":"Corso / Addestramento","other":"","cat":"ore","hours":10,"qty":null,"location":"Avellino","competence":"2026-04","status":"attesa","paidIn":null,"notes":"TAS 13-17"}],"cedolini":[{"id":"c001","month":"2026-01","lines":[]},{"id":"c002","month":"2026-02","lines":[]},{"id":"c003","month":"2026-03","lines":[{"kind":"Straordinario diurno","hours":179,"ref":"2025-08","amount":2608.03},{"kind":"Straordinario nott./festivo","hours":30,"ref":"2025-08","amount":494.1},{"kind":"Straordinario nott./festivo","hours":2,"ref":"2025-08","amount":38.02},{"kind":"Straordinario diurno","hours":5,"ref":"2026-01","amount":72.85},{"kind":"Indennità","hours":null,"ref":"2026-01","amount":265.36}]},{"id":"c004","month":"2026-04","lines":[{"kind":"Straordinario diurno","hours":119,"ref":"2025-11","amount":1733.83},{"kind":"Straordinario nott./festivo","hours":2,"ref":"2025-11","amount":32.94},{"kind":"Straordinario nott./festivo","hours":2,"ref":"2025-11","amount":38.02},{"kind":"Straordinario diurno","hours":6,"ref":"2026-02","amount":87.42},{"kind":"Indennità","hours":null,"ref":"2026-02","amount":629.41}]}]};
 
+/* ═══ DARK MODE ═══ */
+function applyTheme(manual){
+  const h = new Date().getHours();
+  const isNight = h>=20 || h<7;
+  const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let dark;
+  if(manual==='dark') dark=true;
+  else if(manual==='light') dark=false;
+  else dark = sysDark || isNight;
+  document.documentElement.setAttribute('data-dark', dark?'1':'');
+  document.getElementById('theme-toggle').textContent = dark ? '☀️' : '🌙';
+  try{ localStorage.setItem('vvf_theme', dark?'dark':'light'); }catch(e){}
+}
+let themeManual = null;
+try{ themeManual = localStorage.getItem('vvf_theme'); }catch(e){}
+applyTheme(themeManual);
+setInterval(()=>applyTheme(null), 60000); // ricontrolla ogni minuto
+document.getElementById('theme-toggle').onclick = ()=>{
+  const isDark = document.documentElement.hasAttribute('data-dark') && document.documentElement.getAttribute('data-dark')==='1';
+  applyTheme(isDark?'light':'dark');
+};
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ()=>applyTheme(null));
+
+/* ═══ PERSISTENCE ═══ */
 async function load(){
-  if (!hasStore) {
-    state = JSON.parse(JSON.stringify(INITIAL_DATA));
-    return;
-  }
-  try {
-    const r = await window.storage.get(KEY);
-    if (r && r.value) {
-      state = JSON.parse(r.value);
-    } else {
-      // Primo avvio: carica dati storici e salva
-      state = JSON.parse(JSON.stringify(INITIAL_DATA));
-      await window.storage.set(KEY, JSON.stringify(state));
-    }
-  } catch(e) {
-    state = JSON.parse(JSON.stringify(INITIAL_DATA));
-  }
+  if(!hasStore){ state=JSON.parse(JSON.stringify(INITIAL_DATA)); return; }
+  try{
+    const r=await window.storage.get(KEY);
+    if(r&&r.value){ state=JSON.parse(r.value); }
+    else{ state=JSON.parse(JSON.stringify(INITIAL_DATA)); await window.storage.set(KEY,JSON.stringify(state)); }
+  }catch(e){ state=JSON.parse(JSON.stringify(INITIAL_DATA)); }
 }
 let _st;
 async function save(){
-  if (hasStore) { try { await window.storage.set(KEY, JSON.stringify(state)); flashSaved(); } catch(e){ toast('Salvataggio non riuscito'); } }
-  else { flashSaved(); }
+  if(hasStore){ try{ await window.storage.set(KEY,JSON.stringify(state)); flashSaved(); }catch(e){ toast('Salvataggio non riuscito'); }}
+  else flashSaved();
 }
-function flashSaved(){ const s = document.getElementById('saved'); s.classList.add('show'); clearTimeout(_st); _st = setTimeout(() => s.classList.remove('show'), 1400); }
+function flashSaved(){ const s=document.getElementById('saved'); s.classList.add('show'); clearTimeout(_st); _st=setTimeout(()=>s.classList.remove('show'),1400); }
 
-/* ═══════════ UTILS ═══════════ */
-const uid       = () => crypto.randomUUID ? crypto.randomUUID() : 't'+Date.now()+Math.random().toString(16).slice(2);
-const todayISO  = () => new Date().toISOString().slice(0,10);
-const monthOf   = iso => iso ? iso.slice(0,7) : '';
-function monthLabel(ym, short=false){
-  if (!ym) return '—';
-  const [y,m] = ym.split('-');
-  return (short ? MESI_S : MESI)[(+m)-1] + ' ' + y;
+/* ═══ UTILS ═══ */
+const uid      = ()=>crypto.randomUUID?crypto.randomUUID():'t'+Date.now()+Math.random().toString(16).slice(2);
+const todayISO = ()=>new Date().toISOString().slice(0,10);
+const monthOf  = iso=>iso?iso.slice(0,7):'';
+function monthLabel(ym,short=false){ if(!ym)return'—'; const[y,m]=ym.split('-'); return(short?MESI_S:MESI)[(+m)-1]+' '+y; }
+function dateLabel(iso){ if(!iso)return''; const[y,m,d]=iso.split('-'); return d+'/'+m+'/'+y.slice(2); }
+function monthsAgo(ym){ if(!ym)return 0; const[y,m]=ym.split('-').map(Number); const n=new Date(); return(n.getFullYear()-y)*12+(n.getMonth()+1-m); }
+function esc(s){ return(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2000); }
+function fmt(n){ return(Math.round(n*100)/100).toLocaleString('it-IT',{maximumFractionDigits:2}); }
+function calcHours(from,to){
+  if(!from||!to) return null;
+  const[fh,fm]=from.split(':').map(Number);
+  const[th,tm]=to.split(':').map(Number);
+  let diff=(th*60+tm)-(fh*60+fm);
+  if(diff<0) diff+=24*60;
+  return Math.round(diff/60*100)/100;
 }
-function dateLabel(iso){ if (!iso) return ''; const [y,m,d] = iso.split('-'); return d+'/'+m+'/'+y.slice(2); }
-function monthsAgo(ym){ if (!ym) return 0; const [y,m] = ym.split('-').map(Number); const n = new Date(); return (n.getFullYear()-y)*12+(n.getMonth()+1-m); }
-function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2000); }
-function fmt(n){ return (Math.round(n*100)/100).toLocaleString('it-IT',{maximumFractionDigits:2}); }
 
-/* ═══════════ RENDER ═══════════ */
+/* ═══ RENDER ═══ */
 function render(){
-  document.querySelectorAll('#tab-bar button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
-  document.getElementById('nav-title').textContent = tabTitles[tab] || '';
-  const app = document.getElementById('app');
-  if      (tab === 'inserisci') app.innerHTML = viewInserisci();
-  else if (tab === 'servizi')   app.innerHTML = viewServizi();
-  else if (tab === 'cedolini')  app.innerHTML = viewCedolini();
-  else                          app.innerHTML = viewInsoluto();
+  document.querySelectorAll('#tab-bar button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  document.getElementById('nav-title').textContent=tabTitles[tab]||'';
+  const app=document.getElementById('app');
+  if(tab==='inserisci') app.innerHTML=viewInserisci();
+  else if(tab==='servizi')   app.innerHTML=viewServizi();
+  else if(tab==='cedolini')  app.innerHTML=viewCedolini();
+  else                       app.innerHTML=viewInsoluto();
   wire();
   window.scrollTo(0,0);
 }
-window.go = t => { tab = t; render(); };
+window.go = t=>{ tab=t; render(); };
 
-/* ─────────── INSERISCI ─────────── */
+/* ══════════════════════════════════════════
+   INSERISCI
+══════════════════════════════════════════ */
 function viewInserisci(){
-  const opts = TIPI.map(t => `<option value="${t[0]}">${t[0]}</option>`).join('');
+  const opts=TIPI.map(t=>`<option value="${t[0]}">${t[0]}</option>`).join('');
   return `
 <div style="padding:0 0 8px">
   <div class="large-title">Nuovo servizio</div>
@@ -458,6 +327,14 @@ function viewInserisci(){
       <label>Specifica</label>
       <input id="f_other" placeholder="descrivi…">
     </div>
+    <div class="ios-r" id="f_time_wrap">
+      <label>Dalle</label>
+      <input type="time" id="f_from" style="color:var(--blue)">
+    </div>
+    <div class="ios-r" id="f_time_wrap2">
+      <label>Alle</label>
+      <input type="time" id="f_to" style="color:var(--blue)">
+    </div>
     <div class="ios-r">
       <label id="f_qty_label">Ore</label>
       <input type="number" id="f_qty" inputmode="decimal" step="0.25" min="0" placeholder="0">
@@ -467,62 +344,74 @@ function viewInserisci(){
       <input id="f_loc" placeholder="es. Faito, fono 5596">
     </div>
   </div>
+  <div class="time-note" id="f_time_note"></div>
 
   <div class="sh">Note</div>
   <div class="ios-g gap">
     <div class="ios-r ta">
-      <textarea id="f_notes" rows="3" placeholder="Orario, fono, dettagli aggiuntivi…"></textarea>
+      <textarea id="f_notes" rows="3" placeholder="Orario, fono, dettagli…"></textarea>
     </div>
   </div>
 
   <button class="btn-prim" id="f_save">Salva servizio</button>
-  <div class="sf">Il mese di competenza viene calcolato automaticamente dalla data.</div>
+  <div class="sf">La competenza viene calcolata automaticamente dalla data.</div>
 </div>`;
 }
 
-/* ─────────── SERVIZI ─────────── */
+/* ══════════════════════════════════════════
+   SERVIZI
+══════════════════════════════════════════ */
 function viewServizi(){
-  const list = [...state.services].sort((a,b) => (b.date||'').localeCompare(a.date||''));
-  const f = filter;
-  const cnt = st => list.filter(s => s.status === st).length;
-  const seg = `<div class="seg">
+  const list=[...state.services].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const f=filter;
+  const cnt=st=>list.filter(s=>s.status===st).length;
+  const seg=`<div class="seg">
     <button class="${f==='attesa'?'on':''}" data-filter="attesa">In attesa (${cnt('attesa')})</button>
     <button class="${f==='pagato'?'on':''}" data-filter="pagato">Pagati (${cnt('pagato')})</button>
     <button class="${f==='tutti' ?'on':''}" data-filter="tutti">Tutti (${list.length})</button>
   </div>`;
-  const shown = list.filter(s => f==='tutti' ? true : f==='attesa' ? s.status==='attesa' : s.status==='pagato');
-  if (!list.length)  return seg + emptyState('Nessun servizio', 'Aggiungi il primo dalla tab Inserisci.', 'inserisci');
-  if (!shown.length) return seg + emptyState('Niente qui', 'Nessun servizio in questo filtro.');
-  let html = seg, lastG = '';
-  shown.forEach(s => {
-    const g = monthOf(s.date);
-    if (g !== lastG){ html += `<div class="month-hd">${monthLabel(g,true)}</div>`; lastG = g; }
-    html += svcCard(s);
+  const shown=list.filter(s=>f==='tutti'?true:f==='attesa'?s.status==='attesa':s.status==='pagato');
+  if(!list.length)  return seg+emptyState('Nessun servizio','Aggiungi il primo dalla tab Inserisci.','inserisci');
+  if(!shown.length) return seg+emptyState('Niente qui','Nessun servizio in questo filtro.');
+  let html=seg, lastG='';
+  shown.forEach(s=>{
+    const g=monthOf(s.date);
+    if(g!==lastG){
+      const cnt=shown.filter(x=>monthOf(x.date)===g).length;
+      html+=`<div class="month-hd">
+        <span class="month-hd-lbl">${monthLabel(g,true)}</span>
+        <button class="del-month-btn" data-month="${g}">🗑 Elimina mese (${cnt})</button>
+      </div>`;
+      lastG=g;
+    }
+    html+=svcCard(s);
   });
   return html;
 }
 
 function svcCard(s){
-  const paid = s.status === 'pagato';
-  const age  = monthsAgo(s.competence);
-  const old  = !paid && age >= 9;
-  const dotCls = paid ? 'ok' : old ? 'old' : 'wait';
-  const typeName = s.type === 'Altro' ? (s.other||'Altro') : s.type;
-  const qtyNum = s.cat === 'conteggio'
-    ? `<div class="svc-qty">${s.qty||0}<small>×</small></div>`
-    : `<div class="svc-qty">${fmt(s.hours||0)}<small>ore</small></div>`;
-  const tagStatus = paid
-    ? `<span class="tag ok">Pagato${s.paidIn?' · '+monthLabel(s.paidIn,true):''}</span>`
-    : `<span class="tag wait">In attesa</span>`;
-  const payBtn = paid
-    ? `<button class="t-wait" data-id="${s.id}">↩︎ In attesa</button>`
-    : `<button class="grn t-pay" data-id="${s.id}">✓ Pagato</button>`;
+  const paid=s.status==='pagato';
+  const age=monthsAgo(s.competence);
+  const old=!paid&&age>=9;
+  const dotCls=paid?'ok':old?'old':'wait';
+  const typeName=s.type==='Altro'?(s.other||'Altro'):s.type;
+  const qtyNum=s.cat==='conteggio'
+    ?`<div class="svc-qty">${s.qty||0}<small>×</small></div>`
+    :`<div class="svc-qty">${fmt(s.hours||0)}<small>ore</small></div>`;
+  const tagStatus=paid
+    ?`<span class="tag ok">Pagato${s.paidIn?' · '+monthLabel(s.paidIn,true):''}</span>`
+    :`<span class="tag wait">In attesa</span>`;
+  const timeRow=s.startTime&&s.endTime?`<div class="svc-time">⏱ ${s.startTime} → ${s.endTime}</div>`:'';
+  const payBtn=paid
+    ?`<button class="t-wait" data-id="${s.id}">↩︎ In attesa</button>`
+    :`<button class="grn t-pay" data-id="${s.id}">✓ Pagato</button>`;
   return `<div class="svc">
     <div class="svc-body">
       <div class="svc-stripe ${dotCls}"></div>
       <div class="svc-info">
         <div class="svc-title">${esc(typeName)}</div>
         <div class="svc-sub">${dateLabel(s.date)}${s.location?' · '+esc(s.location):''}</div>
+        ${timeRow}
         <div class="svc-tags">
           ${tagStatus}
           <span class="tag comp">comp. ${monthLabel(s.competence,true)}</span>
@@ -540,11 +429,12 @@ function svcCard(s){
   </div>`;
 }
 
-/* ─────────── CEDOLINI ─────────── */
+/* ══════════════════════════════════════════
+   CEDOLINI
+══════════════════════════════════════════ */
 function viewCedolini(){
-  const list = [...state.cedolini].sort((a,b) => (b.month||'').localeCompare(a.month||''));
-
-  const lineHtml = draftLines.map((l,i) => `
+  const list=[...state.cedolini].sort((a,b)=>(b.month||'').localeCompare(a.month||''));
+  const lineHtml=draftLines.map((l,i)=>`
     <div class="bldr-line" data-i="${i}">
       <div class="bldr-grid">
         <div class="bldr-field" style="grid-column:1/-1">
@@ -554,53 +444,37 @@ function viewCedolini(){
               .map(k=>`<option ${k===l.kind?'selected':''}>${k}</option>`).join('')}
           </select>
         </div>
-        <div class="bldr-field">
-          <label>Ore</label>
-          <input class="dl-hours" type="number" inputmode="decimal" step="0.5" placeholder="—" value="${l.hours??''}">
-        </div>
-        <div class="bldr-field">
-          <label>Competenza</label>
-          <input class="dl-ref" type="month" value="${l.ref||''}">
-        </div>
-        <div class="bldr-field">
-          <label>Importo €</label>
-          <input class="dl-amt" type="number" inputmode="decimal" step="0.01" placeholder="—" value="${l.amount??''}">
-        </div>
+        <div class="bldr-field"><label>Ore</label><input class="dl-hours" type="number" inputmode="decimal" step="0.5" placeholder="—" value="${l.hours??''}"></div>
+        <div class="bldr-field"><label>Competenza</label><input class="dl-ref" type="month" value="${l.ref||''}"></div>
+        <div class="bldr-field"><label>Importo €</label><input class="dl-amt" type="number" inputmode="decimal" step="0.01" placeholder="—" value="${l.amount??''}"></div>
       </div>
-      <div class="bldr-del">
-        <button class="btn-sm red dl-x" data-i="${i}">Rimuovi voce</button>
-      </div>
+      <div class="bldr-del"><button class="btn-sm red dl-x" data-i="${i}">Rimuovi voce</button></div>
     </div>`).join('');
 
-  let html = `
+  let html=`
 <div style="padding:0 0 8px">
   <div class="large-title">Cedolini</div>
-
   <div class="sh" style="margin-top:16px">Mese del cedolino</div>
   <div class="ios-g gap-sm">
-    <div class="ios-r">
-      <label>Mese</label>
-      <input type="month" id="c_month" value="${monthOf(todayISO())}">
-    </div>
+    <div class="ios-r"><label>Mese</label><input type="month" id="c_month" value="${monthOf(todayISO())}"></div>
   </div>
-
   <div class="sh mt-sm">Voci pagate</div>
   <div class="bldr-wrap gap-sm" id="c_lines_wrap">
-    ${lineHtml || '<div style="padding:14px 16px;font-size:15px;color:var(--lbl2)">Nessuna voce aggiunta</div>'}
+    ${lineHtml||'<div style="padding:14px 16px;font-size:15px;color:var(--lbl2)">Nessuna voce aggiunta</div>'}
   </div>
   <button class="btn-ghost gap-sm" id="c_addline" style="width:100%;margin-bottom:10px">＋ Aggiungi voce pagata</button>
   <button class="btn-prim" id="c_save" style="margin-bottom:28px">Salva cedolino</button>`;
 
-  if (list.length){
-    html += `<div class="sh">Cedolini registrati</div>`;
-    list.forEach(c => {
-      const rows = (c.lines||[]).map(l => `<div class="cedo-row">
+  if(list.length){
+    html+=`<div class="sh">Cedolini registrati</div>`;
+    list.forEach(c=>{
+      const rows=(c.lines||[]).map(l=>`<div class="cedo-row">
         <span class="k">${esc(l.kind)}</span>
         ${l.hours!=null?`<span class="d">${l.hours} h</span>`:''}
         ${l.ref?`<span class="tag comp" style="font-size:11px">comp. ${monthLabel(l.ref,true)}</span>`:''}
         ${l.amount!=null?`<span class="d tnum" style="margin-left:auto">€ ${(+l.amount).toFixed(2)}</span>`:''}
       </div>`).join('');
-      html += `<div class="cedo">
+      html+=`<div class="cedo">
         <div class="cedo-hd">
           <strong>${monthLabel(c.month)}</strong>
           <button class="btn-sm grn c-recon" data-id="${c.id}">Riscontra</button>
@@ -610,231 +484,210 @@ function viewCedolini(){
       </div>`;
     });
   }
-  return html + '</div>';
+  return html+'</div>';
 }
 
 function reconcileCedolino(id){
-  const c = state.cedolini.find(x => x.id === id); if (!c) return;
-  let marked = 0;
-  (c.lines||[]).forEach(l => {
-    if (!l.ref) return;
-    let budget = l.hours == null ? Infinity : +l.hours;
-    const cand = state.services
-      .filter(s => s.status==='attesa' && s.cat==='ore' && s.competence===l.ref)
-      .sort((a,b) => (a.date||'').localeCompare(b.date||''));
-    for (const s of cand){
-      if (budget <= 0) break;
-      s.status = 'pagato'; s.paidIn = c.month; marked++;
-      budget -= (s.hours||0);
-    }
+  const c=state.cedolini.find(x=>x.id===id); if(!c) return;
+  let marked=0;
+  (c.lines||[]).forEach(l=>{
+    if(!l.ref) return;
+    let budget=l.hours==null?Infinity:+l.hours;
+    const cand=state.services
+      .filter(s=>s.status==='attesa'&&s.cat==='ore'&&s.competence===l.ref)
+      .sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+    for(const s of cand){ if(budget<=0)break; s.status='pagato'; s.paidIn=c.month; marked++; budget-=(s.hours||0); }
   });
-  save();
-  toast(marked ? `${marked} servizi segnati come pagati` : 'Nessun servizio in attesa per queste competenze');
-  render();
+  save(); toast(marked?`${marked} servizi segnati come pagati`:'Nessun servizio in attesa per queste competenze'); render();
 }
 
-/* ─────────── INSOLUTO ─────────── */
+/* ══════════════════════════════════════════
+   INSOLUTO
+══════════════════════════════════════════ */
 function viewInsoluto(){
-  const pend = state.services.filter(s => s.status === 'attesa');
+  const pend=state.services.filter(s=>s.status==='attesa');
+  if(!state.services.length) return emptyState('Nessun dato ancora','Inizia da "Inserisci" a registrare i tuoi servizi.','inserisci');
 
-  if (!state.services.length){
-    return emptyState('Nessun dato ancora',
-      'Inizia da "Inserisci" a registrare i tuoi servizi. Qui vedrai sempre cosa ti devono ancora pagare.',
-      'inserisci');
-  }
+  const oreTot=pend.filter(s=>s.cat==='ore').reduce((a,s)=>a+(+s.hours||0),0);
+  const cntTot=pend.filter(s=>s.cat==='conteggio').reduce((a,s)=>a+(+s.qty||0),0);
 
-  const oreTot = pend.filter(s => s.cat==='ore').reduce((a,s) => a+(+s.hours||0), 0);
-  const cntTot = pend.filter(s => s.cat==='conteggio').reduce((a,s) => a+(+s.qty||0), 0);
+  const byComp={};
+  pend.forEach(s=>{ const k=s.competence||'—'; byComp[k]=byComp[k]||{ore:0,cnt:0,n:0};
+    if(s.cat==='ore') byComp[k].ore+=(+s.hours||0); else byComp[k].cnt+=(+s.qty||0); byComp[k].n++; });
 
-  const byComp = {};
-  pend.forEach(s => {
-    const k = s.competence||'—';
-    byComp[k] = byComp[k] || {ore:0, cnt:0, n:0};
-    if (s.cat==='ore') byComp[k].ore += (+s.hours||0);
-    else               byComp[k].cnt += (+s.qty||0);
-    byComp[k].n++;
-  });
-  const comps = Object.keys(byComp).sort();
+  // ← ORDINATO DAL PIÙ RECENTE
+  const comps=Object.keys(byComp).sort().reverse();
 
-  const tableRows = comps.map(k => {
-    const v = byComp[k], age = monthsAgo(k), old = age >= 9;
+  const tableRows=comps.map(k=>{
+    const v=byComp[k], age=monthsAgo(k), old=age>=9;
     return `<div class="ios-td">
-      <div class="main">
-        ${monthLabel(k,true)}
-        ${old?`<span class="tag warn" style="font-size:10px;padding:1px 6px">${age}m</span>`:''}
-      </div>
-      <div class="r${old?' red':''}">${v.ore ? fmt(v.ore)+' h' : '—'}</div>
+      <div class="main">${monthLabel(k,true)}${old?`<span class="tag warn" style="font-size:10px;padding:1px 6px">${age}m</span>`:''}</div>
+      <div class="r${old?' red':''}">${v.ore?fmt(v.ore)+' h':'—'}</div>
       <div class="r" style="min-width:34px">${v.cnt||'—'}</div>
       <div class="r" style="min-width:28px;color:var(--lbl3)">${v.n}</div>
     </div>`;
   }).join('');
 
-  const oldest = [...pend]
-    .sort((a,b) => (a.competence||'').localeCompare(b.competence||''))
-    .filter(s => monthsAgo(s.competence) >= 9).slice(0,6);
+  const oldest=[...pend].sort((a,b)=>(a.competence||'').localeCompare(b.competence||'')).filter(s=>monthsAgo(s.competence)>=9).slice(0,6);
 
   return `
 <div style="padding:0 0 8px">
   <div class="large-title">Insoluto</div>
-
   <div class="topbar mt">
     <button class="btn-ghost" id="exp_json" style="font-size:13px">⬇︎ Backup</button>
     <button class="btn-ghost" id="imp_json" style="font-size:13px">⬆︎ Ripristina</button>
     <button class="btn-ghost" id="exp_csv" style="font-size:13px">CSV</button>
   </div>
-
-  <div class="sh">${pend.length} voci in attesa · ${state.services.length} totali registrate</div>
+  <div class="sh">${pend.length} voci in attesa · ${state.services.length} totali</div>
   <div class="widgets gap">
-    <div class="widget">
-      <div class="wico">⏱</div>
-      <div class="wnum red">${fmt(oreTot)}</div>
-      <div class="wlbl">ore da pagare</div>
-    </div>
-    <div class="widget">
-      <div class="wico">🍽</div>
-      <div class="wnum red">${cntTot}</div>
-      <div class="wlbl">pasti / pernotti</div>
-    </div>
+    <div class="widget"><div class="wico">⏱</div><div class="wnum red">${fmt(oreTot)}</div><div class="wlbl">ore da pagare</div></div>
+    <div class="widget"><div class="wico">🍽</div><div class="wnum red">${cntTot}</div><div class="wlbl">pasti / pernotti</div></div>
   </div>
-
-  <div class="sh">Per mese di competenza</div>
+  <div class="sh">Per mese di competenza — dal più recente</div>
   <div class="ios-tbl gap">
-    <div class="ios-th">
-      <div style="flex:1">Competenza</div>
-      <div style="min-width:52px;text-align:right">Ore</div>
-      <div style="min-width:34px;text-align:right">Cnt</div>
-      <div style="min-width:28px;text-align:right;color:var(--lbl3)">N</div>
-    </div>
-    ${tableRows || '<div class="ios-td"><div class="main" style="color:var(--green)">Tutto pagato 🎉</div></div>'}
+    <div class="ios-th"><div style="flex:1">Competenza</div><div style="min-width:52px;text-align:right">Ore</div><div style="min-width:34px;text-align:right">Cnt</div><div style="min-width:28px;text-align:right;color:var(--lbl3)">N</div></div>
+    ${tableRows||'<div class="ios-td"><div class="main" style="color:var(--green)">Tutto pagato 🎉</div></div>'}
   </div>
-
-  ${oldest.length ? `<div class="sh">⏳ In ritardo da oltre 9 mesi</div>` + oldest.map(svcCard).join('') : ''}
-
+  ${oldest.length?`<div class="sh">⏳ In ritardo da oltre 9 mesi</div>`+oldest.map(svcCard).join(''):''}
   <input type="file" id="imp_file" accept="application/json" style="display:none">
 </div>`;
 }
 
-function emptyState(title, sub, goTab){
-  return `<div class="empty">
-    <div class="ico">📭</div>
-    <h3>${title}</h3>
-    <p>${sub}</p>
-    ${goTab ? `<button class="btn-prim" style="max-width:220px;margin:0 auto" onclick="go('${goTab}')">Vai a Inserisci</button>` : ''}
-  </div>`;
+function emptyState(title,sub,goTab){
+  return `<div class="empty"><div class="ico">📭</div><h3>${title}</h3><p>${sub}</p>${goTab?`<button class="btn-prim" style="max-width:220px;margin:0 auto" onclick="go('${goTab}')">Vai a Inserisci</button>`:''}</div>`;
 }
 
-/* ═══════════ WIRING ═══════════ */
+/* ═══ WIRING ═══ */
 function wire(){
-  if (tab === 'inserisci') wireInserisci();
-  if (tab === 'servizi')   wireServizi();
-  if (tab === 'cedolini')  wireCedolini();
-  if (tab === 'insoluto')  wireInsoluto();
+  if(tab==='inserisci') wireInserisci();
+  if(tab==='servizi')   wireServizi();
+  if(tab==='cedolini')  wireCedolini();
+  if(tab==='insoluto')  wireInsoluto();
 }
 
 function wireInserisci(){
-  const type = document.getElementById('f_type');
-  const sync = () => {
-    const t = type.value, isCnt = catOf(t) === 'conteggio';
-    document.getElementById('f_other_wrap').style.display = t === 'Altro' ? 'flex' : 'none';
-    document.getElementById('f_qty_label').textContent = isCnt ? 'Quantità' : 'Ore';
-    const q = document.getElementById('f_qty');
-    q.step = isCnt ? '1' : '0.25'; q.placeholder = '0';
-  };
-  type.addEventListener('change', sync); sync();
-  document.getElementById('f_save').addEventListener('click', () => {
-    const t = type.value, cat = catOf(t);
-    const qty = parseFloat(document.getElementById('f_qty').value);
-    if (isNaN(qty) || qty <= 0){ toast(cat === 'conteggio' ? 'Inserisci la quantità' : 'Inserisci le ore'); return; }
-    const date = document.getElementById('f_date').value || todayISO();
-    const s = {
-      id: uid(), date, type: t,
-      other: document.getElementById('f_other').value.trim(),
-      cat, hours: cat==='ore' ? qty : null, qty: cat==='conteggio' ? qty : null,
-      location: document.getElementById('f_loc').value.trim(),
-      competence: monthOf(date), status: 'attesa', paidIn: null,
-      notes: document.getElementById('f_notes').value.trim()
+  const type=document.getElementById('f_type');
+  const fQty=document.getElementById('f_qty');
+  const fFrom=document.getElementById('f_from');
+  const fTo=document.getElementById('f_to');
+  const note=document.getElementById('f_time_note');
+
+  function syncType(){
+    const t=type.value, isCnt=catOf(t)==='conteggio';
+    document.getElementById('f_other_wrap').style.display=t==='Altro'?'flex':'none';
+    document.getElementById('f_qty_label').textContent=isCnt?'Quantità':'Ore';
+    document.getElementById('f_time_wrap').style.display=isCnt?'none':'flex';
+    document.getElementById('f_time_wrap2').style.display=isCnt?'none':'flex';
+    fQty.step=isCnt?'1':'0.25'; fQty.placeholder='0';
+  }
+  function syncTime(){
+    const h=calcHours(fFrom.value,fTo.value);
+    if(h!==null){
+      fQty.value=h;
+      fQty.classList.add('calc');
+      const crossMidnight=(fTo.value<fFrom.value);
+      note.textContent=`${fFrom.value} → ${fTo.value}${crossMidnight?' (+1 giorno)':''} = ${fmt(h)} ore`;
+      note.classList.add('show');
+    } else {
+      fQty.classList.remove('calc');
+      note.classList.remove('show');
+    }
+  }
+  type.addEventListener('change',syncType); syncType();
+  fFrom.addEventListener('change',syncTime);
+  fTo.addEventListener('change',syncTime);
+  fQty.addEventListener('input',()=>{ fQty.classList.remove('calc'); note.classList.remove('show'); });
+
+  document.getElementById('f_save').addEventListener('click',()=>{
+    const t=type.value, cat=catOf(t);
+    const qty=parseFloat(fQty.value);
+    if(isNaN(qty)||qty<0){ toast(cat==='conteggio'?'Inserisci la quantità':'Inserisci le ore'); return; }
+    const date=document.getElementById('f_date').value||todayISO();
+    const s={
+      id:uid(), date, type:t, other:document.getElementById('f_other').value.trim(), cat,
+      hours:cat==='ore'?qty:null, qty:cat==='conteggio'?qty:null,
+      startTime:fFrom.value||null, endTime:fTo.value||null,
+      location:document.getElementById('f_loc').value.trim(),
+      competence:monthOf(date), status:'attesa', paidIn:null,
+      notes:document.getElementById('f_notes').value.trim()
     };
-    state.services.push(s); save(); toast('Servizio salvato'); tab = 'servizi'; filter = 'attesa'; render();
+    state.services.push(s); save(); toast('Servizio salvato'); tab='servizi'; filter='attesa'; render();
   });
 }
 
 function wireServizi(){
-  document.querySelectorAll('.seg button').forEach(b => b.onclick = () => { filter = b.dataset.filter; render(); });
-  document.querySelectorAll('.t-pay').forEach( b => b.onclick = () => setStatus(b.dataset.id, 'pagato'));
-  document.querySelectorAll('.t-wait').forEach(b => b.onclick = () => setStatus(b.dataset.id, 'attesa'));
-  document.querySelectorAll('.t-del').forEach( b => b.onclick = () => { state.services = state.services.filter(s => s.id !== b.dataset.id); save(); toast('Eliminato'); render(); });
-  document.querySelectorAll('.t-edit').forEach(b => b.onclick = () => editService(b.dataset.id));
+  document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{ filter=b.dataset.filter; render(); });
+  document.querySelectorAll('.t-pay').forEach( b=>b.onclick=()=>setStatus(b.dataset.id,'pagato'));
+  document.querySelectorAll('.t-wait').forEach(b=>b.onclick=()=>setStatus(b.dataset.id,'attesa'));
+  document.querySelectorAll('.t-del').forEach( b=>b.onclick=()=>{ state.services=state.services.filter(s=>s.id!==b.dataset.id); save(); toast('Eliminato'); render(); });
+  document.querySelectorAll('.t-edit').forEach(b=>b.onclick=()=>editService(b.dataset.id));
+  document.querySelectorAll('.del-month-btn').forEach(b=>b.onclick=()=>{
+    const month=b.dataset.month;
+    const toDelete=state.services.filter(s=>monthOf(s.date)===month&&(filter==='tutti'||s.status===filter));
+    if(!toDelete.length){ toast('Nessun servizio da eliminare'); return; }
+    if(confirm(`Eliminare ${toDelete.length} servizi di ${monthLabel(month,true)}?`)){
+      const ids=new Set(toDelete.map(s=>s.id));
+      state.services=state.services.filter(s=>!ids.has(s.id));
+      save(); toast(`${ids.size} servizi eliminati`); render();
+    }
+  });
 }
-function setStatus(id, st){
-  const s = state.services.find(x => x.id === id); if (!s) return;
-  s.status = st; if (st === 'attesa') s.paidIn = null; save(); render();
-}
+function setStatus(id,st){ const s=state.services.find(x=>x.id===id); if(!s)return; s.status=st; if(st==='attesa')s.paidIn=null; save(); render(); }
 function editService(id){
-  const s = state.services.find(x => x.id === id); if (!s) return;
-  const lbl = s.cat === 'conteggio' ? 'quantità' : 'ore';
-  const nv = prompt(`${s.type} del ${dateLabel(s.date)} — modifica ${lbl}:`, s.cat==='conteggio' ? s.qty : s.hours);
-  if (nv === null) return;
-  const n = parseFloat(nv); if (isNaN(n)){ toast('Valore non valido'); return; }
-  if (s.cat === 'conteggio') s.qty = n; else s.hours = n;
-  const nl = prompt('Località / riferimento:', s.location||'');
-  if (nl !== null) s.location = nl.trim();
+  const s=state.services.find(x=>x.id===id); if(!s) return;
+  const lbl=s.cat==='conteggio'?'quantità':'ore';
+  const nv=prompt(`${s.type} del ${dateLabel(s.date)} — modifica ${lbl}:`,s.cat==='conteggio'?s.qty:s.hours);
+  if(nv===null) return;
+  const n=parseFloat(nv); if(isNaN(n)){ toast('Valore non valido'); return; }
+  if(s.cat==='conteggio') s.qty=n; else s.hours=n;
+  const nl=prompt('Località / riferimento:',s.location||''); if(nl!==null) s.location=nl.trim();
   save(); toast('Aggiornato'); render();
 }
 
 function wireCedolini(){
-  document.getElementById('c_addline').onclick = () => { readDraft(); draftLines.push({kind:'Straordinario diurno',hours:'',ref:'',amount:''}); render(); };
-  document.querySelectorAll('.dl-x').forEach(b => b.onclick = () => { readDraft(); draftLines.splice(+b.dataset.i, 1); render(); });
-  document.getElementById('c_save').onclick = () => {
+  document.getElementById('c_addline').onclick=()=>{ readDraft(); draftLines.push({kind:'Straordinario diurno',hours:'',ref:'',amount:''}); render(); };
+  document.querySelectorAll('.dl-x').forEach(b=>b.onclick=()=>{ readDraft(); draftLines.splice(+b.dataset.i,1); render(); });
+  document.getElementById('c_save').onclick=()=>{
     readDraft();
-    const month = document.getElementById('c_month').value;
-    if (!month){ toast('Indica il mese del cedolino'); return; }
-    const lines = draftLines
-      .filter(l => l.hours!==''||l.ref!==''||l.amount!=='')
-      .map(l => ({ kind:l.kind, hours:l.hours===''?null:+l.hours, ref:l.ref||null, amount:l.amount===''?null:+l.amount }));
-    if (!lines.length){ toast('Aggiungi almeno una voce'); return; }
-    state.cedolini.push({ id:uid(), month, lines });
-    draftLines = []; save(); toast('Cedolino salvato'); render();
+    const month=document.getElementById('c_month').value;
+    if(!month){ toast('Indica il mese del cedolino'); return; }
+    const lines=draftLines.filter(l=>l.hours!==''||l.ref!==''||l.amount!=='')
+      .map(l=>({kind:l.kind,hours:l.hours===''?null:+l.hours,ref:l.ref||null,amount:l.amount===''?null:+l.amount}));
+    if(!lines.length){ toast('Aggiungi almeno una voce'); return; }
+    state.cedolini.push({id:uid(),month,lines}); draftLines=[]; save(); toast('Cedolino salvato'); render();
   };
-  document.querySelectorAll('.c-recon').forEach(b => b.onclick = () => reconcileCedolino(b.dataset.id));
-  document.querySelectorAll('.c-del').forEach(b => b.onclick = () => {
-    if (confirm('Eliminare questo cedolino?')){ state.cedolini = state.cedolini.filter(c => c.id !== b.dataset.id); save(); render(); }
-  });
+  document.querySelectorAll('.c-recon').forEach(b=>b.onclick=()=>reconcileCedolino(b.dataset.id));
+  document.querySelectorAll('.c-del').forEach(b=>b.onclick=()=>{ if(confirm('Eliminare questo cedolino?')){ state.cedolini=state.cedolini.filter(c=>c.id!==b.dataset.id); save(); render(); }});
 }
 function readDraft(){
-  document.querySelectorAll('[data-i]').forEach(row => {
-    const i = +row.dataset.i; if (!draftLines[i]) return;
-    const ks=row.querySelector('.dl-kind'), hs=row.querySelector('.dl-hours'),
-          rs=row.querySelector('.dl-ref'),  as=row.querySelector('.dl-amt');
-    if (ks) draftLines[i].kind   = ks.value;
-    if (hs) draftLines[i].hours  = hs.value;
-    if (rs) draftLines[i].ref    = rs.value;
-    if (as) draftLines[i].amount = as.value;
+  document.querySelectorAll('[data-i]').forEach(row=>{
+    const i=+row.dataset.i; if(!draftLines[i]) return;
+    const ks=row.querySelector('.dl-kind'),hs=row.querySelector('.dl-hours'),rs=row.querySelector('.dl-ref'),as=row.querySelector('.dl-amt');
+    if(ks) draftLines[i].kind=ks.value;
+    if(hs) draftLines[i].hours=hs.value;
+    if(rs) draftLines[i].ref=rs.value;
+    if(as) draftLines[i].amount=as.value;
   });
 }
 
 function wireInsoluto(){
-  document.querySelectorAll('.t-pay').forEach( b => b.onclick = () => setStatus(b.dataset.id, 'pagato'));
-  document.querySelectorAll('.t-wait').forEach(b => b.onclick = () => setStatus(b.dataset.id, 'attesa'));
-  document.querySelectorAll('.t-del').forEach( b => b.onclick = () => { state.services = state.services.filter(s => s.id !== b.dataset.id); save(); render(); });
-  document.querySelectorAll('.t-edit').forEach(b => b.onclick = () => editService(b.dataset.id));
-  const ej=document.getElementById('exp_json'); if(ej) ej.onclick = exportJSON;
-  const ec=document.getElementById('exp_csv');  if(ec) ec.onclick = exportCSV;
+  document.querySelectorAll('.t-pay').forEach( b=>b.onclick=()=>setStatus(b.dataset.id,'pagato'));
+  document.querySelectorAll('.t-wait').forEach(b=>b.onclick=()=>setStatus(b.dataset.id,'attesa'));
+  document.querySelectorAll('.t-del').forEach( b=>b.onclick=()=>{ state.services=state.services.filter(s=>s.id!==b.dataset.id); save(); render(); });
+  document.querySelectorAll('.t-edit').forEach(b=>b.onclick=()=>editService(b.dataset.id));
+  const ej=document.getElementById('exp_json'); if(ej) ej.onclick=exportJSON;
+  const ec=document.getElementById('exp_csv');  if(ec) ec.onclick=exportCSV;
   const ij=document.getElementById('imp_json'); const f=document.getElementById('imp_file');
   if(ij&&f){ ij.onclick=()=>f.click(); f.onchange=importJSON; }
 }
 
-/* ═══════════ BACKUP ═══════════ */
-function download(name, text, mime){
-  const b=new Blob([text],{type:mime}); const u=URL.createObjectURL(b);
-  const a=document.createElement('a'); a.href=u; a.download=name; a.click();
-  setTimeout(()=>URL.revokeObjectURL(u),500);
-}
-function exportJSON(){ download('registro_vvf_backup.json', JSON.stringify(state,null,2), 'application/json'); toast('Backup scaricato'); }
+/* ═══ BACKUP ═══ */
+function download(name,text,mime){ const b=new Blob([text],{type:mime}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(u),500); }
+function exportJSON(){ download('registro_vvf_backup.json',JSON.stringify(state,null,2),'application/json'); toast('Backup scaricato'); }
 function exportCSV(){
-  const rows=[['Data','Tipo','Cat','Ore','Qty','Competenza','Stato','PagatoIn','Località','Note']];
-  state.services.filter(s=>s.status==='attesa')
-    .sort((a,b)=>(a.competence||'').localeCompare(b.competence||''))
-    .forEach(s=>rows.push([s.date,s.type==='Altro'?(s.other||'Altro'):s.type,s.cat,s.hours||'',s.qty||'',s.competence,s.status,s.paidIn||'',s.location||'',(s.notes||'').replace(/\n/g,' ')]));
+  const rows=[['Data','Tipo','Cat','Ore','Qty','Dalle','Alle','Competenza','Stato','PagatoIn','Località','Note']];
+  state.services.filter(s=>s.status==='attesa').sort((a,b)=>(a.competence||'').localeCompare(b.competence||''))
+    .forEach(s=>rows.push([s.date,s.type==='Altro'?(s.other||'Altro'):s.type,s.cat,s.hours||'',s.qty||'',s.startTime||'',s.endTime||'',s.competence,s.status,s.paidIn||'',s.location||'',(s.notes||'').replace(/\n/g,' ')]));
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(';')).join('\n');
   download('insoluto.csv','\ufeff'+csv,'text/csv'); toast('CSV scaricato');
 }
@@ -845,11 +698,7 @@ function importJSON(e){
   r.readAsText(file);
 }
 
-/* ═══════════ NAV ═══════════ */
-document.querySelectorAll('#tab-bar button').forEach(b => b.onclick = () => {
-  tab = b.dataset.tab; if (tab !== 'servizi') filter = 'attesa'; render();
-});
-
-/* ═══════════ BOOT ═══════════ */
-(async () => { await load(); render(); if (!hasStore) toast('Anteprima: dati non persistiti'); })();
+/* ═══ NAV + BOOT ═══ */
+document.querySelectorAll('#tab-bar button').forEach(b=>b.onclick=()=>{ tab=b.dataset.tab; if(tab!=='servizi') filter='attesa'; render(); });
+(async()=>{ await load(); render(); if(!hasStore) toast('Anteprima: dati non persistiti'); })();
 </script>
